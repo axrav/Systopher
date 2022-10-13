@@ -23,7 +23,7 @@ func SetupRoutes(app *fiber.App) {
 		ErrorHandler: handlers.ErrorHandler,
 	}))
 	server.Post("/addserver", handlers.AddServer)
-	//app.Delete("/deleteserver", handlers.DeleteServer)
+	server.Delete("/deleteserver", handlers.DeleteServer)
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 
 }

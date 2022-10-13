@@ -60,6 +60,31 @@ func CheckServerAndAdd(server *types.Server) (bool, error) {
 	}
 }
 
+func CheckServerAndDelete(server *types.Server) (bool, error) {
+
+	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+	var Ipaddr string
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&Ipaddr)
+	}
+	if Ipaddr == server.Ip {
+		// delete server from database
+		_, err = db.Db.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
+		if err != nil {
+			fmt.Println(err)
+			return false, err
+		}
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 func GenerateJWT(email string) (string, error) {
 	claims := jwt.MapClaims{
 		"email": email,
