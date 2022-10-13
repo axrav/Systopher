@@ -17,10 +17,18 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+
+	// schema
 	// create tables
 	// createUsersTable
-	Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL, servers TEXT)")
+	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, Unique(email))")
 	// createServersTable
-	Db.Exec("CREATE TABLE IF NOT EXISTS servers (id SERIAL PRIMARY KEY, name TEXT NOT NULL, ip TEXT NOT NULL, port TEXT NOT NULL, owner TEXT NOT NULL)")
+	if err != nil {
+		panic(err)
+	}
+	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS servers (id SERIAL PRIMARY KEY, name TEXT NOT NULL, ip TEXT NOT NULL UNIQUE, port TEXT NOT NULL, owner TEXT NOT NULL REFERENCES users (email), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+	if err != nil {
+		panic(err)
+	}
 
 }

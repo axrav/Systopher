@@ -15,8 +15,16 @@ func Login(c *fiber.Ctx) error {
 		})
 	} else {
 		if check, _ := helpers.CompareHashAndPassword(password, email); check {
+			token, err := helpers.GenerateJWT(email)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"message": "Internal Server Error",
+				})
+			}
+
 			return c.Status(fiber.StatusOK).JSON(fiber.Map{
 				"message": "Logged in",
+				"token":   token,
 			})
 		} else {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

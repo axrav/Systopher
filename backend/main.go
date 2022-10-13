@@ -12,16 +12,11 @@ import (
 func main() {
 	godotenv.Load("../.env")
 	app := fiber.New()
-
 	db.Init()
 
 	app.Use(logger.New())
 	// use cors middleware
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,DELETE",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	app.Use(cors.New(cors.ConfigDefault))
 	routes.SetupRoutes(app)
 
 }
