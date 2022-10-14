@@ -4,8 +4,10 @@ import (
 	"os"
 
 	"github.com/axrav/SysAnalytics/backend/handlers"
+	"github.com/axrav/SysAnalytics/backend/middleware"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/gofiber/websocket/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
@@ -23,7 +25,13 @@ func SetupRoutes(app *fiber.App) {
 		ErrorHandler: handlers.ErrorHandler,
 	}))
 	server.Post("/addserver", handlers.AddServer)
-	server.Delete("/deleteserver", handlers.DeleteServer)
+	server.Delete("/deleteserver", middleware.ServerMiddleware, handlers.DeleteServer)
+
+	// protected routes
+	// websocket route for server
+	wsgroup := server.Group("/ws", middleware.ServerMiddleware)
+	wsgroup.Get("/:api", websocket.New(handlers.ServerWS))
+
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 
 }

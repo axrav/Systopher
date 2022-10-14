@@ -13,7 +13,9 @@ func main() {
 	godotenv.Load("../.env")
 	app := fiber.New()
 	db.Init()
-
+	// helpers.DataChannel = make(chan types.ServerData)
+	//helpers.ServerChannel = make(chan []string)
+	//go helpers.GetData(helpers.ServerChannel, helpers.DataChannel)
 	app.Use(logger.New())
 	// use cors middleware
 	app.Use(cors.New(cors.ConfigDefault))

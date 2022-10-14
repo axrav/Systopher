@@ -37,7 +37,7 @@ func CompareHashAndPassword(password string, email string) (bool, error) {
 }
 
 func CheckServerAndAdd(server *types.Server) (bool, error) {
-	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
+	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 	if err != nil {
 		fmt.Println(err)
 		return false, err
@@ -97,4 +97,20 @@ func GenerateJWT(email string) (string, error) {
 	}
 	return tokenString, nil
 
+}
+
+func GetServers(email string) []string {
+	rows, err := db.Db.Query(`SELECT ip,port FROM servers where owner=$1`, email)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer rows.Close()
+	var servers []string
+	for rows.Next() {
+		var ip string
+		var port string
+		rows.Scan(&ip, &port)
+		servers = append(servers, "http://"+ip+":"+port)
+	}
+	return servers
 }
