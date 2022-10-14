@@ -58,6 +58,7 @@ func DeleteServer(c *fiber.Ctx) error {
 	server.Owner = c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
 	deleted, err := helpers.CheckServerAndDelete(server)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Internal Server Error",
 		})

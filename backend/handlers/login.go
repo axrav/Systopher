@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/axrav/SysAnalytics/backend/helpers"
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,6 +19,7 @@ func Login(c *fiber.Ctx) error {
 		if check, _ := helpers.CompareHashAndPassword(password, email); check {
 			token, err := helpers.GenerateJWT(email)
 			if err != nil {
+				fmt.Println(err)
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 					"message": "Internal Server Error",
 				})

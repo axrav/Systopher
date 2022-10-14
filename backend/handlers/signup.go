@@ -17,6 +17,7 @@ func Signup(c *fiber.Ctx) error {
 		})
 	}
 	if hash, err := helpers.HashPassword(password); err != nil {
+		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Internal server error",
 		})
