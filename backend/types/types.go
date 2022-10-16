@@ -26,3 +26,8 @@ type ServerData struct {
 	User            string `json:"user"`
 	Cache           string `json:"cache"`
 }
+
+type OTPResponse struct {
+	Email string `json:"email"`
+	Otp   string `json:"otp"`
+}

@@ -17,3 +17,14 @@ func ServerMiddleware(c *fiber.Ctx) error {
 	c.Locals("servers", servers)
 	return c.Next()
 }
+
+func VerifyMiddleware(c *fiber.Ctx) error {
+	email := c.FormValue("email")
+	isVerified := helpers.GetVerified(email)
+	if !isVerified {
+		return c.Status(401).JSON(fiber.Map{
+			"message": "Unverified",
+		})
+	}
+	return c.Next()
+}

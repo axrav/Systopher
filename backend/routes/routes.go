@@ -15,9 +15,9 @@ func SetupRoutes(app *fiber.App) {
 		return c.SendString("Online")
 	})
 	auth := app.Group("/auth")
-	auth.Post("/login", handlers.Login)
+	auth.Post("/login", middleware.VerifyMiddleware, handlers.Login)
 	auth.Post("/signup", handlers.Signup)
-
+	auth.Post("/verify", handlers.Verify)
 	// protected routes
 	server := app.Group("/server")
 	server.Use(jwtware.New(jwtware.Config{

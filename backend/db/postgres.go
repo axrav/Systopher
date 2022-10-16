@@ -10,9 +10,9 @@ import (
 // postgres database
 var Db *sql.DB
 
-func Init() {
+func InitPostgres() {
 	var err error
-	var DbURI = os.Getenv("DB_URI")
+	var DbURI = os.Getenv("POSTGRES_DB_URI")
 	Db, err = sql.Open("postgres", DbURI)
 	if err != nil {
 		panic(err)
@@ -21,7 +21,7 @@ func Init() {
 	// schema
 	// create tables
 	// createUsersTable
-	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, Unique(email))")
+	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isverified BOOLEAN, Unique(email))")
 	// createServersTable
 	if err != nil {
 		panic(err)
