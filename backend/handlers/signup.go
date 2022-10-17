@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/axrav/SysAnalytics/backend/db"
 	"github.com/axrav/SysAnalytics/backend/helpers"
@@ -26,7 +27,12 @@ func Signup(c *fiber.Ctx) error {
 		sent := helpers.SendOtpAndSave(email)
 		if sent {
 			if _, err = db.Db.Exec("INSERT INTO users (email, password, isverified) VALUES ($1, $2, $3)", email, hash, false); err != nil {
-				fmt.Println(err)
+				if strings.HasSuffix(err.Error(), "\"users_email_key\"") {
+					return c.Status(403).JSON(fiber.Map{
+						"message": "user already exists",
+					})
+
+				}
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 					"message": "Unable to create user",
 				})
