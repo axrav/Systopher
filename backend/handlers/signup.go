@@ -52,6 +52,12 @@ func Verify(c *fiber.Ctx) error {
 				"message": "Missing email or otp",
 			})
 		}
+		out := helpers.GetVerified(resp.Email)
+		if out {
+			return c.Status(409).JSON(fiber.Map{
+				"message": "the user is already verified",
+			})
+		}
 		verified := helpers.VerifyOtp(resp.Email, resp.Otp)
 		if verified {
 			if _, err := db.Db.Exec("UPDATE users SET isverified = true WHERE email = $1", resp.Email); err != nil {

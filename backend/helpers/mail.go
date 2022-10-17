@@ -12,7 +12,8 @@ func SendMail(email string, subject string, body string) error {
 	smtpPort := 587
 	from := os.Getenv("GMAIL_ID")
 	password := os.Getenv("GMAIL_PASSWORD") // app specific password
-	msg.SetHeader("From", from)
+
+	msg.SetAddressHeader("From", from, "Team Systopher")
 	msg.SetHeader("To", email)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody("text/html", body)

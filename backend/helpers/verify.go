@@ -54,6 +54,7 @@ func SendOtpAndSave(email string) bool {
 		return false
 	}
 	sent := SendOtp(email, otp)
+
 	if sent {
 		hash, err := HashPassword(otp)
 		if err != nil {
@@ -80,7 +81,7 @@ func VerifyOtp(email, otp string) bool {
 		return false
 	}
 	check := CheckPasswordHash(otp, hash)
-	go SendMail(email, "Welcome to SysAnalytics", "<b>You have successfully signed up to SysAnalytics and your account is verified now.</b> \n\nYou can now login to your account and start using SysAnalytics. \n\n\nThank you for choosing SysAnalytics. Have a great day!") // this message needs to be changed to a better one with proper formatting
+	go SendMail(email, "Welcome to Systopher", "<b>You have successfully signed up to Systopher and your account is verified now.</b> \n\nYou can now login to your account and start using Systopher. \n\n\nThank you for choosing Systopher. Have a great day!") // this message needs to be changed to a better one with proper formatting
 	return check
 }
 
