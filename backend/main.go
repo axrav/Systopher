@@ -11,6 +11,7 @@ import (
 
 func main() {
 	godotenv.Load("../.env")
+
 	db.InitPostgres()
 	db.InitRedis()
 	app := fiber.New()

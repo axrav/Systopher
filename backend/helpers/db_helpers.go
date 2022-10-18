@@ -66,18 +66,20 @@ func CheckServerAndDelete(server *types.Server) error {
 	return nil
 }
 
-func GetServers(email string) []string {
-	rows, err := db.Db.Query(`SELECT ip,port FROM servers where owner=$1`, email)
+func GetServers(email string) []types.Server {
+	rows, err := db.Db.Query(`SELECT ip,port,token,name FROM servers where owner=$1`, email)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer rows.Close()
-	var servers []string
+	var servers []types.Server
 	for rows.Next() {
-		var ip string
-		var port string
-		rows.Scan(&ip, &port)
-		servers = append(servers, "http://"+ip+":"+port)
+		var server types.Server
+		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name)
+		if err != nil {
+			fmt.Println(err)
+		}
+		servers = append(servers, server)
 	}
 	return servers
 }

@@ -3,9 +3,9 @@ package types
 type Server struct {
 	Ip    string `json:"ip_address"`
 	Port  string `json:"port"`
-	Name  string `json:"name"`
-	Owner string `json:"owner"`
-	Token string `json:"token"`
+	Name  string `json:"name" `
+	Owner string `json:"owner" `
+	Token string `json:"token" `
 }
 type ServerData struct {
 	Ip              string `json:"ip_address"`
@@ -46,4 +46,10 @@ type User struct {
 type LoginUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type UserData struct {
+	Email    string   `json:"email"`
+	Username string   `json:"username"`
+	Servers  []Server `json:"servers"`
 }

@@ -14,12 +14,13 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-func ServerStats(serverChannel chan []string, dataChannel chan types.ServerData, c *websocket.Conn) {
+func ServerStats(serverChannel chan []types.Server, dataChannel chan types.ServerData, c *websocket.Conn) {
 	servers := <-serverChannel
 	var data types.ServerData
 	var client http.Client
 	for {
-		for _, server := range servers {
+		for _, server_data := range servers {
+			server := "http://" + server_data.Ip + ":" + server_data.Port
 			key, err := db.RedisClient.Get(db.Ctx, server).Result()
 			if err != nil {
 				fmt.Println(err)

@@ -7,8 +7,8 @@ import (
 )
 
 func ServerWS(c *websocket.Conn) {
-	servers := c.Locals("servers").([]string)
-	serverChannel := make(chan []string, 1)
+	servers := c.Locals("servers").([]types.Server)
+	serverChannel := make(chan []types.Server, 1)
 	dataChannel := make(chan types.ServerData)
 	serverChannel <- servers
 	go helpers.ServerStats(serverChannel, dataChannel, c)

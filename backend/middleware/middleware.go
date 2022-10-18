@@ -15,6 +15,7 @@ func ServerMiddleware(c *fiber.Ctx) error {
 			"message": "No servers found",
 		})
 	}
+
 	c.Locals("servers", servers)
 	return c.Next()
 }

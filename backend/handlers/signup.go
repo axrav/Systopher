@@ -38,8 +38,13 @@ func Signup(c *fiber.Ctx) error {
 						})
 
 					}
+					if strings.HasSuffix(err.Error(), "\"users_username_key\"") {
+						return c.Status(409).JSON(fiber.Map{
+							"message": "username is taken",
+						})
+					}
 					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-						"message": "Unable to create user",
+						"message": "Unable to create user" + err.Error(),
 					})
 				}
 				return c.JSON(fiber.Map{
