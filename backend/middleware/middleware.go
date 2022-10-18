@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/axrav/SysAnalytics/backend/helpers"
+	"github.com/axrav/SysAnalytics/backend/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -19,12 +20,24 @@ func ServerMiddleware(c *fiber.Ctx) error {
 }
 
 func VerifyMiddleware(c *fiber.Ctx) error {
-	email := c.FormValue("email")
-	isVerified := helpers.GetVerified(email)
+	user := new(types.User)
+	if err := c.BodyParser(user); err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Wrong data",
+		})
+	} else {
+		if user.Email == "" || user.Password == "" {
+			return c.Status(400).JSON(fiber.Map{
+				"message": "Missing email or password",
+			})
+		}
+	}
+	isVerified := helpers.GetVerified(user.Email)
 	if !isVerified {
 		return c.Status(401).JSON(fiber.Map{
 			"message": "Unverified or user not exists",
 		})
 	}
+	c.Locals("loginUser", user)
 	return c.Next()
 }

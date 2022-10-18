@@ -7,11 +7,11 @@ import (
 	"github.com/axrav/SysAnalytics/backend/types"
 )
 
-func CheckServerAndAdd(server *types.Server) (bool, error) {
+func CheckServerAndAdd(server *types.Server) error {
 	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 	if err != nil {
 		fmt.Println(err)
-		return false, err
+		return err
 	}
 	var Ipaddr string
 	defer rows.Close()
@@ -19,36 +19,35 @@ func CheckServerAndAdd(server *types.Server) (bool, error) {
 		rows.Scan(&Ipaddr)
 	}
 	if Ipaddr == server.Ip {
-		return false, nil
+		return fmt.Errorf("server already exists")
 	} else {
-		test := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
-
+		test, err := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
 		if test {
 			// insert server to database
 			_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
 			if err != nil {
 				fmt.Println(err)
-				return false, err
+				return err
 			}
 			out := SaveServerToken("http://"+server.Ip+":"+server.Port, server.Token)
 			if out {
-				return true, nil
+				return nil
 			} else {
-				return false, fmt.Errorf("error saving server token")
+				return fmt.Errorf("error saving server token")
 			}
 		} else {
-			return false, fmt.Errorf("unable to connect to server")
+			return err
 		}
 	}
 
 }
 
-func CheckServerAndDelete(server *types.Server) (bool, error) {
+func CheckServerAndDelete(server *types.Server) error {
 
 	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
 	if err != nil {
 		fmt.Println(err)
-		return false, err
+		return err
 	}
 	var Ipaddr string
 	defer rows.Close()
@@ -60,12 +59,11 @@ func CheckServerAndDelete(server *types.Server) (bool, error) {
 		_, err = db.Db.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 		if err != nil {
 			fmt.Println(err)
-			return false, err
+			return err
 		}
-		return true, nil
-	} else {
-		return false, nil
+
 	}
+	return nil
 }
 
 func GetServers(email string) []string {

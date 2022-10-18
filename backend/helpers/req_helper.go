@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/axrav/SysAnalytics/backend/db"
@@ -22,7 +23,7 @@ func ServerStats(serverChannel chan []string, dataChannel chan types.ServerData,
 			key, err := db.RedisClient.Get(db.Ctx, server).Result()
 			if err != nil {
 				fmt.Println(err)
-				c.WriteMessage(websocket.TextMessage, []byte("Error: Token not found"))
+				c.WriteJSON(fiber.Map{"server": server, "errorType": "server not found"})
 			}
 			req, err := http.NewRequest("GET", server, nil)
 			if err != nil {
@@ -57,21 +58,34 @@ func ServerStats(serverChannel chan []string, dataChannel chan types.ServerData,
 	}
 }
 
-func TestRequest(ip string, port string, token string) bool {
-	client := &http.Client{}
+func TestRequest(ip string, port string, token string) (bool, error) {
+	client := &http.Client{
+		Timeout: time.Second * 8,
+	}
 	req, err := http.NewRequest("GET", "http://"+ip+":"+port, nil)
 	if err != nil {
-		fmt.Println(err)
-		return false
+		fmt.Println(err.Error())
 	}
 	req.Header.Set("X-API-KEY", token)
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return false
+		fmt.Println(err.Error())
+		if strings.HasSuffix(err.Error(), "(Client.Timeout exceeded while awaiting headers)") {
+			return false, fmt.Errorf("timeout, is the Port exposed?")
+
+		} else if strings.HasSuffix(err.Error(), "connection refused") {
+			return false, fmt.Errorf("is the server running?")
+
+		} else {
+			return false, err
+		}
 	}
 	if resp.StatusCode == 200 {
-		return true
+		return true, nil
+	} else if resp.StatusCode == 403 {
+		return false, fmt.Errorf("the token is invalid")
+	} else {
+		return false, fmt.Errorf("the server is not responding")
 	}
-	return false
+	// return false, fmt.Errorf("error sending request")
 }
