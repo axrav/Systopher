@@ -67,7 +67,7 @@ func CheckServerAndDelete(server *types.Server) error {
 }
 
 func GetServers(email string) []types.Server {
-	rows, err := db.Db.Query(`SELECT ip,port,token,name FROM servers where owner=$1`, email)
+	rows, err := db.Db.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -75,7 +75,7 @@ func GetServers(email string) []types.Server {
 	var servers []types.Server
 	for rows.Next() {
 		var server types.Server
-		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name)
+		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name, &server.Owner)
 		if err != nil {
 			fmt.Println(err)
 		}
