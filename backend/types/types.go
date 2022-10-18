@@ -5,8 +5,10 @@ type Server struct {
 	Port  string `json:"port"`
 	Name  string `json:"name"`
 	Owner string `json:"owner"`
+	Token string `json:"token"`
 }
 type ServerData struct {
+	Ip              string `json:"ip_address"`
 	TotalMemory     string `json:"total_memory"`
 	Ping            string `json:"ping"`
 	UsedMemory      string `json:"ram"`

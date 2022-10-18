@@ -26,7 +26,7 @@ func InitPostgres() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS servers (id SERIAL PRIMARY KEY, name TEXT, ip TEXT NOT NULL UNIQUE, port TEXT NOT NULL, owner TEXT NOT NULL REFERENCES users (email), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS servers (id SERIAL PRIMARY KEY, name TEXT, ip TEXT NOT NULL UNIQUE, port TEXT NOT NULL, owner TEXT NOT NULL REFERENCES users (email),token TEXT NOT NULL UNIQUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
 	if err != nil {
 		panic(err)
 	}

@@ -22,10 +22,14 @@ func CheckServerAndAdd(server *types.Server) (bool, error) {
 		return false, nil
 	} else {
 		// insert server to database
-		_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner) VALUES ($1, $2, $3, $4)`, server.Name, server.Ip, server.Port, server.Owner)
+		_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
 		if err != nil {
 			fmt.Println(err)
 			return false, err
+		}
+		out := SaveServerToken("http://"+server.Ip+":"+server.Port, server.Token)
+		if !out {
+			return false, nil
 		}
 		return true, nil
 	}

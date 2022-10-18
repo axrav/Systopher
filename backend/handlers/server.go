@@ -9,6 +9,12 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+func GenerateToken(c *fiber.Ctx) error {
+	return c.Status(200).JSON(fiber.Map{
+		"token": helpers.GenerateServerToken(),
+	})
+}
+
 func AddServer(c *fiber.Ctx) error {
 	newServer := new(types.Server)
 	if err := c.BodyParser(newServer); err != nil {
@@ -18,9 +24,9 @@ func AddServer(c *fiber.Ctx) error {
 		})
 	} else {
 		newServer.Owner = c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
-		if newServer.Ip == "" || newServer.Port == "" || newServer.Owner == "" {
+		if newServer.Ip == "" || newServer.Port == "" || newServer.Owner == "" || newServer.Token == "" {
 			return c.Status(400).JSON(fiber.Map{
-				"message": "Missing IP/Port/Owner",
+				"message": "Missing IP/Port/Owner/Token",
 			})
 		}
 		// check if server already exists in database or not

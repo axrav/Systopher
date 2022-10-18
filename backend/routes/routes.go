@@ -24,6 +24,7 @@ func SetupRoutes(app *fiber.App) {
 		SigningKey:   []byte(os.Getenv("JWT_SECRET")),
 		ErrorHandler: handlers.ErrorHandler,
 	}))
+	server.Get("/generateToken", handlers.GenerateToken)
 	server.Post("/addserver", handlers.AddServer)
 	server.Delete("/deleteserver", middleware.ServerMiddleware, handlers.DeleteServer)
 

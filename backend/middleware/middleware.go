@@ -23,7 +23,7 @@ func VerifyMiddleware(c *fiber.Ctx) error {
 	isVerified := helpers.GetVerified(email)
 	if !isVerified {
 		return c.Status(401).JSON(fiber.Map{
-			"message": "Unverified",
+			"message": "Unverified or user not exists",
 		})
 	}
 	return c.Next()
