@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/axrav/SysAnalytics/backend/db"
+	"github.com/axrav/Systopher/backend/db"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )

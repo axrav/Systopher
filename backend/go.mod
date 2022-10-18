@@ -1,4 +1,4 @@
-module github.com/axrav/SysAnalytics/backend
+module github.com/axrav/Systopher/backend
 
 go 1.19
 

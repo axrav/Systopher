@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/axrav/SysAnalytics/backend/db"
-	"github.com/axrav/SysAnalytics/backend/types"
+	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )

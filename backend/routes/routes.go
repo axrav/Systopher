@@ -3,8 +3,8 @@ package routes
 import (
 	"os"
 
-	"github.com/axrav/SysAnalytics/backend/handlers"
-	"github.com/axrav/SysAnalytics/backend/middleware"
+	"github.com/axrav/Systopher/backend/handlers"
+	"github.com/axrav/Systopher/backend/middleware"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/gofiber/websocket/v2"

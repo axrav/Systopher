@@ -3,8 +3,8 @@ package helpers
 import (
 	"fmt"
 
-	"github.com/axrav/SysAnalytics/backend/db"
-	"github.com/axrav/SysAnalytics/backend/types"
+	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/types"
 )
 
 func GetUserData(email string) *types.UserData {

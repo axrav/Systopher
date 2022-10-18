@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/axrav/SysAnalytics/backend/db"
+	"github.com/axrav/Systopher/backend/db"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyz" +

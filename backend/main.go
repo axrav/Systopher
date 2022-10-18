@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/axrav/SysAnalytics/backend/db"
-	"github.com/axrav/SysAnalytics/backend/routes"
+	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"

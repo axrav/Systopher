@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/axrav/SysAnalytics/backend/db"
+	"github.com/axrav/Systopher/backend/db"
 )
 
 const otpChars = "1234567890"
@@ -27,12 +27,12 @@ func GenerateOTP() (string, error) {
 
 func SendOtp(email string, otp string) bool {
 	var err error
-	subject, err := base64.StdEncoding.DecodeString("T1RQIC0gU3lzQW5hbHl0aWNz")
+	subject, err := base64.StdEncoding.DecodeString("T1RQIC0gU3lzdG9waGVy")
 	if err != nil {
 		fmt.Println(err)
 		return false
 	}
-	body, err := base64.StdEncoding.DecodeString("T25lIFRpbWUgUGFzc3dvcmQoT1RQKSBmb3IgcmVnaXN0ZXJpbmcgb24gU3lzQW5hbHl0aWNzIGlzOg==")
+	body, err := base64.StdEncoding.DecodeString("T25lIFRpbWUgUGFzc3dvcmQoT1RQKSBmb3IgcmVnaXN0ZXJpbmcgb24gU3lzdG9waGVyIGlzOg==")
 	if err != nil {
 		fmt.Println(err)
 		return false
@@ -81,7 +81,9 @@ func VerifyOtp(email, otp string) bool {
 		return false
 	}
 	check := CheckPasswordHash(otp, hash)
-	go SendMail(email, "Welcome to Systopher", "<b>You have successfully signed up to Systopher and your account is verified now.</b> \n\nYou can now login to your account and start using Systopher. \n\n\nThank you for choosing Systopher. Have a great day!") // this message needs to be changed to a better one with proper formatting
+	if check { // if otp is correct
+		go SendMail(email, "Welcome to Systopher", "<b>You have successfully signed up to Systopher and your account is verified now.</b> \n\nYou can now login to your account and start using Systopher. \n\n\nThank you for choosing Systopher. Have a great day!")
+	} // this message needs to be changed to a better one with proper formatting
 	return check
 }
 

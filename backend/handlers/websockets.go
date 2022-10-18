@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/axrav/SysAnalytics/backend/helpers"
-	"github.com/axrav/SysAnalytics/backend/types"
+	"github.com/axrav/Systopher/backend/helpers"
+	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/websocket/v2"
 )
 
