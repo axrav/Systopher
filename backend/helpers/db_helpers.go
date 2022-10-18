@@ -21,18 +21,26 @@ func CheckServerAndAdd(server *types.Server) (bool, error) {
 	if Ipaddr == server.Ip {
 		return false, nil
 	} else {
-		// insert server to database
-		_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
-		if err != nil {
-			fmt.Println(err)
-			return false, err
+		test := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
+
+		if test {
+			// insert server to database
+			_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
+			if err != nil {
+				fmt.Println(err)
+				return false, err
+			}
+			out := SaveServerToken("http://"+server.Ip+":"+server.Port, server.Token)
+			if out {
+				return true, nil
+			} else {
+				return false, fmt.Errorf("error saving server token")
+			}
+		} else {
+			return false, fmt.Errorf("unable to connect to server")
 		}
-		out := SaveServerToken("http://"+server.Ip+":"+server.Port, server.Token)
-		if !out {
-			return false, nil
-		}
-		return true, nil
 	}
+
 }
 
 func CheckServerAndDelete(server *types.Server) (bool, error) {

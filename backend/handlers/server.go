@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/axrav/SysAnalytics/backend/helpers"
 	"github.com/axrav/SysAnalytics/backend/types"
@@ -33,9 +34,15 @@ func AddServer(c *fiber.Ctx) error {
 		added, err := helpers.CheckServerAndAdd(newServer)
 		if err != nil {
 			fmt.Println(err)
-			return c.Status(500).JSON(fiber.Map{
-				"message": "Internal Server Error",
-			})
+			if strings.HasSuffix(err.Error(), "unable to connect to server") {
+				return c.Status(502).JSON(fiber.Map{
+					"message": "Unable to connect to server",
+				})
+			} else {
+				return c.Status(500).JSON(fiber.Map{
+					"message": "Internal Server Error",
+				})
+			}
 		}
 		if added {
 			return c.Status(200).JSON(fiber.Map{

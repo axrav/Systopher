@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -22,7 +23,8 @@ func GenerateServerToken() string {
 }
 
 func SaveServerToken(ip string, token string) bool {
-	if err := db.RedisClient.Set(db.Ctx, ip, token, 0); err != nil {
+	if err := db.RedisClient.Set(db.Ctx, ip, token, 0).Err(); err != nil {
+		fmt.Println(err)
 		return false
 	}
 	return true
