@@ -18,7 +18,10 @@ func Login(c *fiber.Ctx) error {
 				"message": "Internal Server Error",
 			})
 		}
-
+		c.Cookie(&fiber.Cookie{
+			Name:  "login",
+			Value: token,
+		})
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"message": "Logged in",
 			"token":   token,

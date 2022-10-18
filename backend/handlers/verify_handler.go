@@ -43,6 +43,10 @@ func Verify(c *fiber.Ctx) error {
 					"message": "Internal server error",
 				})
 			}
+			c.Cookie(&fiber.Cookie{
+				Name:  "verified",
+				Value: token,
+			})
 			return c.JSON(fiber.Map{
 				"message": "Verified",
 				"token":   token,
