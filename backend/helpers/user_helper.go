@@ -28,13 +28,10 @@ func GetUserData(email string) *types.UserData {
 }
 
 func GetEmailFromId(token string) string {
-	row, err := db.Db.Query("SELECT email FROM users where UniqueID=$1", token)
+	email, err := db.RedisClient.Get(db.Ctx, token).Result()
 	if err != nil {
 		fmt.Println(err)
-	}
-	var email string
-	for row.Next() {
-		row.Scan(&email)
+		return ""
 	}
 
 	return email
