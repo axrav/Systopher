@@ -31,7 +31,7 @@ func Signup(c *fiber.Ctx) error {
 		} else {
 			sent := helpers.SendOtpAndSave(user.Email)
 			if sent {
-				if _, err = db.Db.Exec("INSERT INTO users (email, password, username, isverified) VALUES ($1, $2, $3, $4)", user.Email, hash, user.Username, false); err != nil {
+				if _, err = db.Db.Exec("INSERT INTO users (email, password, username, isverified, uniqueid) VALUES ($1, $2, $3, $4, $5)", user.Email, hash, user.Username, false, helpers.GenerateUserId()); err != nil {
 					if strings.HasSuffix(err.Error(), "\"users_email_key\"") {
 						return c.Status(409).JSON(fiber.Map{
 							"message": "user already exists",

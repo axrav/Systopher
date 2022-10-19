@@ -29,3 +29,11 @@ func SaveServerToken(ip string, token string) bool {
 	}
 	return true
 }
+
+func GenerateUserId() string {
+	b := make([]byte, 10)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return "USER-" + string(b)
+}

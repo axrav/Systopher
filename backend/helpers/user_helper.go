@@ -8,19 +8,34 @@ import (
 )
 
 func GetUserData(email string) *types.UserData {
-	row, err := db.Db.Query("SELECT username FROM users where email=$1", email)
+	row, err := db.Db.Query("SELECT username,uniqueid FROM users where email=$1", email)
 	if err != nil {
 		fmt.Println(err)
 	}
 	var username string
-	row.Scan(&username)
+	var uniqueID string
+	for row.Next() {
+		row.Scan(&username, &uniqueID)
+	}
 
 	return &types.UserData{
 		Email:    email,
 		Username: username,
+		UniqueID: uniqueID,
 		Servers:  GetServers(email),
 	}
 
 }
 
-// Get user data from database
+func GetEmailFromId(token string) string {
+	row, err := db.Db.Query("SELECT email FROM users where UniqueID=$1", token)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var email string
+	for row.Next() {
+		row.Scan(&email)
+	}
+
+	return email
+}

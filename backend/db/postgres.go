@@ -21,7 +21,7 @@ func InitPostgres() {
 	// schema
 	// create tables
 	// createUsersTable
-	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY,username TEXT UNIQUE, email TEXT NOT NULL, password TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isverified BOOLEAN, Unique(email))")
+	_, err = Db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY,username TEXT UNIQUE, email TEXT NOT NULL,UniqueID TEXT NOT NULL UNIQUE, password TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isverified BOOLEAN, Unique(email))")
 	// createServersTable
 	if err != nil {
 		panic(err)

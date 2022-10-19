@@ -41,6 +41,7 @@ type User struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	UniqueID string `json:",omitempty"`
 }
 
 type LoginUser struct {
@@ -51,5 +52,6 @@ type LoginUser struct {
 type UserData struct {
 	Email    string   `json:"email"`
 	Username string   `json:"username"`
+	UniqueID string   `json:"unique_id"`
 	Servers  []Server `json:"servers"`
 }

@@ -32,8 +32,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// protected routes
 	// websocket route for server
-	wsgroup := server.Group("/ws", middleware.ServerMiddleware)
-	wsgroup.Get("/:api", websocket.New(handlers.ServerWS))
+	app.Get("/ws", middleware.WebSocketMiddleware, websocket.New(handlers.ServerWS))
 
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 
