@@ -25,6 +25,7 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan types.Serve
 		default:
 			var data = types.ServerData{}
 			for _, server_data := range servers {
+
 				server := "http://" + server_data.Ip + ":" + server_data.Port
 				key, err := db.RedisClient.Get(db.Ctx, server).Result()
 				if err != nil {
@@ -54,15 +55,15 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan types.Serve
 					}
 					if data.Ping == "" {
 						c.WriteJSON(fiber.Map{"server": server, "errorType": "TOKEN MISMATCH"})
+					} else {
+						dataChannel <- data
 					}
 				}
 
-				dataChannel <- data
-
 			}
-			time.Sleep(30 * time.Second)
 
 		}
+		time.Sleep(15 * time.Second)
 	}
 }
 

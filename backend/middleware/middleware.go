@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"fmt"
-
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +21,6 @@ func ServerMiddleware(c *fiber.Ctx) error {
 }
 
 func WebSocketMiddleware(c *fiber.Ctx) error {
-	fmt.Println(c.Query("userid"))
 	email := helpers.GetEmailFromId(c.Query("userid"))
 	if email == "" {
 		return c.Status(500).JSON(fiber.Map{
@@ -56,7 +53,7 @@ func VerifyMiddleware(c *fiber.Ctx) error {
 	isVerified := helpers.GetVerified(user.Email)
 	if !isVerified {
 		return c.Status(401).JSON(fiber.Map{
-			"message": "Unverified or user not exists",
+			"message": "Unverified or user doesnt' exists",
 		})
 	}
 	c.Locals("loginUser", user)

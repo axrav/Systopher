@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
@@ -17,11 +18,11 @@ func ServerWS(c *websocket.Conn) {
 	go helpers.ServerStats(serverChannel, dataChannel, c, ctx)
 	for {
 		data := <-dataChannel
-		c.WriteJSON(data)
-		_, _, err := c.ReadMessage()
+		err := c.WriteJSON(data)
 		if err != nil {
+			fmt.Println(err)
 			cancel()
-			break
 		}
+
 	}
 }
