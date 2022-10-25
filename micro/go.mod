@@ -1,4 +1,4 @@
-module github.com/axrav/Systopher/micro
+module github.com/axrav/Systopher/microservice
 
 go 1.19
 

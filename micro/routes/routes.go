@@ -3,8 +3,8 @@ package routes
 import (
 	"os"
 
-	"github.com/axrav/Systopher/micro/handler"
-	"github.com/axrav/Systopher/micro/middleware"
+	"github.com/axrav/Systopher/microservice/handler"
+	"github.com/axrav/Systopher/microservice/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )

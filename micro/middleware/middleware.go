@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 
-	"github.com/axrav/Systopher/micro/helpers"
+	"github.com/axrav/Systopher/microservice/helpers"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -8,7 +8,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/axrav/Systopher/micro/types"
+	"github.com/axrav/Systopher/microservice/types"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
