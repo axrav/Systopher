@@ -14,7 +14,10 @@ import (
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/process"
+	"github.com/showwin/speedtest-go/speedtest"
 )
+
+var DataChan = make(chan types.ServerData, 1)
 
 func SortMemory(processes []types.Process) []types.Process {
 	sort.Slice(processes, func(i, j int) bool {
@@ -65,7 +68,7 @@ func TopProcesses() []types.Process {
 		}
 		processes = append(processes, newProcess)
 	}
-	return RemoveDuplicates(SortMemory(processes))
+	return RemoveDuplicates(SortMemory(processes))[:4]
 
 }
 
@@ -101,18 +104,38 @@ func BasicData() types.ServerData {
 		CPUUsage:       CPUUsage,
 		CPU:            CpuModel,
 		Core:           fmt.Sprintf("%d", CoreCount),
-		TotalMemory:    fmt.Sprintf("%d", TotalRam),
-		UsedMemory:     fmt.Sprintf("%d", UsedRam),
-		FreeMemory:     fmt.Sprintf("%d", TotalRam-UsedRam),
-		TotalSwapiness: fmt.Sprintf("%d", TotalSwap),
-		SwapUsed:       fmt.Sprintf("%d", UsedSwap),
-		FreeSwap:       fmt.Sprintf("%d", FreeSwap),
-		Cache:          fmt.Sprintf("%d", MemoryCache),
-		Disk:           fmt.Sprintf("%g", math.Round(float64((Total*100))/1024/1024/1024)/100),
-		DiskUsed:       fmt.Sprintf("%g", math.Round(float64((Used*100))/1024/1024/1024)/100),
+		TotalMemory:    fmt.Sprintf("%d Mb", TotalRam),
+		UsedMemory:     fmt.Sprintf("%d Mb", UsedRam),
+		FreeMemory:     fmt.Sprintf("%d Mb", TotalRam-UsedRam),
+		TotalSwapiness: fmt.Sprintf("%d Mb", TotalSwap),
+		SwapUsed:       fmt.Sprintf("%d Mb", UsedSwap),
+		FreeSwap:       fmt.Sprintf("%d Mb", FreeSwap),
+		Cache:          fmt.Sprintf("%d Mb", MemoryCache),
+		Disk:           fmt.Sprintf("%g Gb", math.Round(float64((Total*100))/1024/1024/1024)/100),
+		DiskUsed:       fmt.Sprintf("%g Gb", math.Round(float64((Used*100))/1024/1024/1024)/100),
 		Processes:      fmt.Sprintf("%d", count),
 		TopProcesses:   TopProcesses,
 		User:           User.Username,
 	}
+
+}
+
+func SendServerData() types.ServerData {
+	user, _ := speedtest.FetchUserInfo()
+
+	serverList, _ := speedtest.FetchServers(user)
+	targets, _ := serverList.FindServer([]int{})
+	init_data := BasicData()
+	for _, target := range targets {
+		target.PingTest()
+		target.DownloadTest(false)
+		target.UploadTest(false)
+
+		init_data.DownloadSpeed = fmt.Sprintf("%g Mbps", math.Round(float64(target.DLSpeed*100))/100)
+		init_data.UploadSpeed = fmt.Sprintf("%g Mbps", math.Round(float64(target.ULSpeed*100))/100)
+		init_data.Ping = target.Latency.String()
+
+	}
+	return init_data
 
 }

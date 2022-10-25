@@ -1,7 +1,11 @@
 package handler
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/axrav/Systopher/micro/helpers"
+	"github.com/gofiber/fiber/v2"
+)
 
 func GetStats(c *fiber.Ctx) error {
-	return c.Status(200).JSON(fiber.Map{"message": "Stats"})
+	stats := helpers.SendServerData()
+	return c.JSON(stats)
 }
