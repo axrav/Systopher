@@ -54,3 +54,35 @@ func Verify(c *fiber.Ctx) error {
 		}
 	}
 }
+
+func ResendOTP(c *fiber.Ctx) error {
+	email := new(types.Email)
+	if err := c.BodyParser(email); err != nil {
+		fmt.Println(err)
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Wrong data",
+		})
+	} else {
+		if email.Email == "" {
+			return c.Status(400).JSON(fiber.Map{
+				"message": "Missing email",
+			})
+		}
+		out := helpers.GetVerified(email.Email)
+		if out {
+			return c.Status(409).JSON(fiber.Map{
+				"message": "the user is already verified",
+			})
+		}
+
+		output := helpers.SendOtpAndSave(email.Email)
+		if output {
+			return c.JSON(fiber.Map{
+				"message": "OTP sent",
+			})
+		}
+	}
+	return c.Status(500).JSON(fiber.Map{
+		"message": "Internal server error",
+	})
+}

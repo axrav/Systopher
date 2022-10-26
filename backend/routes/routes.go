@@ -17,6 +17,7 @@ func SetupRoutes(app *fiber.App) {
 	auth := app.Group("/auth")
 	auth.Post("/login", middleware.VerifyMiddleware, handlers.Login)
 	auth.Post("/signup", handlers.Signup)
+	auth.Post("/resendotp", handlers.ResendOTP)
 	auth.Post("/verify", handlers.Verify)
 
 	// protected routes

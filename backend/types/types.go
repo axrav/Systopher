@@ -63,3 +63,7 @@ type UserData struct {
 	UniqueID string   `json:"unique_id"`
 	Servers  []Server `json:"servers"`
 }
+
+type Email struct {
+	Email string `json:"email"`
+}
