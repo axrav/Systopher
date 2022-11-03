@@ -19,9 +19,9 @@ import (
 
 var DataChan = make(chan types.ServerData, 1)
 
-func SortMemory(processes []types.Process) []types.Process {
+func SortCpu(processes []types.Process) []types.Process {
 	sort.Slice(processes, func(i, j int) bool {
-		return processes[i].MemoryPercent > processes[j].MemoryPercent
+		return processes[i].CPU > processes[j].CPU
 	})
 	return processes
 }
@@ -68,7 +68,7 @@ func TopProcesses() []types.Process {
 		}
 		processes = append(processes, newProcess)
 	}
-	return RemoveDuplicates(SortMemory(processes))[:4]
+	return RemoveDuplicates(SortCpu(processes))[:4]
 
 }
 
