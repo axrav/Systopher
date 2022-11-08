@@ -15,7 +15,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-func ServerStats(serverChannel chan []types.Server, dataChannel chan types.ServerData, c *websocket.Conn, ctx context.Context) {
+func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.ServerData, c *websocket.Conn, ctx context.Context) {
 	var client http.Client
 	servers := <-serverChannel
 	for {
@@ -23,7 +23,8 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan types.Serve
 		case <-ctx.Done():
 			return
 		default:
-			var data = types.ServerData{}
+			var stats []types.ServerData
+			var data types.ServerData
 			for _, server_data := range servers {
 
 				server := "http://" + server_data.Ip + ":" + server_data.Port
@@ -56,11 +57,14 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan types.Serve
 					if data.Ping == "" {
 						c.WriteJSON(fiber.Map{"server": server, "errorType": "TOKEN MISMATCH"})
 					} else {
-						dataChannel <- data
+						stats = append(stats, data)
+						data = types.ServerData{}
 					}
 				}
 
 			}
+			dataChannel <- stats
+			stats = nil
 
 		}
 		time.Sleep(15 * time.Second)

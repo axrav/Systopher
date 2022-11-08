@@ -19,6 +19,7 @@ func SetupRoutes(app *fiber.App) {
 	auth.Post("/signup", handlers.Signup)
 	auth.Post("/resendotp", handlers.ResendOTP)
 	auth.Post("/verify", handlers.Verify)
+	// auth.Post("/forget", middleware.VerifyMiddleware, handlers.Forgetpassword)
 
 	// protected routes
 	server := app.Group("/server")
@@ -29,6 +30,7 @@ func SetupRoutes(app *fiber.App) {
 	server.Get("/user", handlers.User)
 	server.Get("/generateToken", handlers.GenerateToken)
 	server.Post("/addserver", handlers.AddServer)
+
 	server.Delete("/deleteserver", middleware.ServerMiddleware, handlers.DeleteServer)
 
 	// protected routes
