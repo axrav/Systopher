@@ -1,11 +1,13 @@
 import "../styles/globals.css";
 import { AppProps } from "next/app";
+import { Provider } from "react-redux";
+import { wrapper } from "../redux/store";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 
-export default function App(props: AppProps) {
+const App = (props: AppProps) => {
   const { Component, pageProps } = props;
-
+  const { store, props: properties } = wrapper.useWrappedStore(wrapper);
   return (
     <>
       <Head>
@@ -24,8 +26,12 @@ export default function App(props: AppProps) {
           colorScheme: "dark",
         }}
       >
-        <Component {...pageProps} />
+        <Provider store={store}>
+          <Component {...properties.pageProps} />
+        </Provider>
       </MantineProvider>
     </>
   );
-}
+};
+
+export default App;

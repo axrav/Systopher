@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 import LoginForm from "../components/LoginPage/LoginForm";
 import { Alert } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
+import Router from "next/router";
 
 export default function login() {
   const [error, setError] = React.useState("");
   const [showError, setShowError] = React.useState(false);
+  //   useEffect(() => {
+  //     if (localStorage.getItem("token") !== null) {
+  //       Router.push("/dashboard");
+  //     }
+  //   });
+
   return (
     <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between overflow-y-scroll">
       <div className="absolute bottom-5 right-5">

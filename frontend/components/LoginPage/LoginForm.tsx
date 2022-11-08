@@ -1,7 +1,10 @@
 import React from "react";
 import LoginInput from "./LoginInput";
+import Router from "next/router";
 import api from "../../api";
 import { Button } from "@mantine/core";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrorMessage, signIn } from "../../redux/actions/UserAuth";
 
 function LoginForm({
   error,
@@ -16,21 +19,22 @@ function LoginForm({
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: any) => state.auth.user);
+  const userError = useSelector((state: any) => state.auth.error);
+
+  console.log(user);
+  console.log(userError);
+
+  const handleSubmit = async () => {
     setLoading(true);
-    try {
-      const res = await api.post("/auth/login", {
-        email: email,
-        password: password,
-      });
-      localStorage.setItem("token", res.data.token);
-    } catch (error: any) {
-      setLoading(false);
-      setShowError(true);
-      error.response.status == 400 ? setError("Invalid Credentials") : null;
-    }
+    dispatch(signIn(email, password, setLoading, setError, setShowError));
   };
+
+  if (user) {
+    Router.push("/dashboard");
+  }
 
   return (
     <div className="w-10/12 bg-gray-900 h-fit flex flex-col space-y-12">
@@ -43,7 +47,7 @@ function LoginForm({
         </p>
       </div>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(e) => e.preventDefault()}
         className="flex flex-col space-y-8"
         action=""
       >
@@ -68,6 +72,7 @@ function LoginForm({
           type="submit"
           size="xl"
           loading={loading}
+          onClick={handleSubmit}
         >
           Login
         </Button>
