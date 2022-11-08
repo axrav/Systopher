@@ -5,7 +5,10 @@ import rootReducer from "./reducers/rootReducer";
 
 const middleware = [thunk];
 
-const makeStore = () =>
-  createStore(rootReducer, compose(applyMiddleware(...middleware)));
+const store = createStore(rootReducer, compose(applyMiddleware(...middleware)));
+
+const makeStore = () => store;
 
 export const wrapper = createWrapper(makeStore);
+
+export type AppDispatch = typeof store.dispatch;

@@ -3,9 +3,10 @@ import Router from "next/router";
 import api from "../api";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, signOut } from "../redux/actions/UserAuth";
+import { useAppDispatch } from "../components/hooks/useAppDispatch";
 
 function dashboard() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const userError = useSelector((state: any) => state.auth.error);
 

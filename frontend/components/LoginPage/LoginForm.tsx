@@ -5,6 +5,7 @@ import api from "../../api";
 import { Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrorMessage, signIn } from "../../redux/actions/UserAuth";
+import { useAppDispatch } from "../hooks/useAppDispatch";
 
 function LoginForm({
   error,
@@ -19,7 +20,7 @@ function LoginForm({
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const user = useSelector((state: any) => state.auth.user);
   const userError = useSelector((state: any) => state.auth.error);
