@@ -6,12 +6,10 @@ import { Button } from "@mantine/core";
 function LoginForm({
   error,
   setError,
-  showError,
   setShowError,
 }: {
   error: string;
   setError: React.Dispatch<React.SetStateAction<string>>;
-  showError: boolean;
   setShowError: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [email, setEmail] = React.useState("");

@@ -23,7 +23,6 @@ export default function login() {
       </div>
       <div className="md:w-1/2 w-full h-full flex items-center justify-center">
         <LoginForm
-          showError={showError}
           setShowError={setShowError}
           error={error}
           setError={setError}
