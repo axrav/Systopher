@@ -76,6 +76,7 @@ func SendOtpAndSave(email string) bool {
 
 func VerifyOtp(email, otp string) bool {
 	hash, err := db.RedisClient.Get(db.Ctx, email).Result()
+	fmt.Println("Hash: " + hash)
 	if err != nil {
 		fmt.Println(err)
 		return false
@@ -88,7 +89,7 @@ func VerifyOtp(email, otp string) bool {
 }
 
 func GetVerified(email string) bool {
-	rows, err := db.Db.Query(`SELECT isverified FROM users where email=$1`, email)
+	rows, err := db.Pgres.Query(`SELECT isverified FROM users where email=$1`, email)
 	if err != nil {
 		fmt.Println(err)
 	}

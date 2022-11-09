@@ -8,7 +8,7 @@ import (
 )
 
 func GetUserData(email string) *types.UserData {
-	row, err := db.Db.Query("SELECT username,uniqueid FROM users where email=$1", email)
+	row, err := db.Pgres.Query("SELECT username,uniqueid FROM users where email=$1", email)
 	if err != nil {
 		fmt.Println(err)
 	}

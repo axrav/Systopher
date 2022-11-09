@@ -68,3 +68,8 @@ type UserData struct {
 type Email struct {
 	Email string `json:"email"`
 }
+
+type Password struct {
+	Password    string `json:"password"`
+	NewPassword string `json:"new_password"`
+}

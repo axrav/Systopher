@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -32,7 +31,7 @@ func Signup(c *fiber.Ctx) error {
 			sent := helpers.SendOtpAndSave(user.Email)
 			if sent {
 				u_id := helpers.GenerateUserId()
-				if _, err = db.Db.Exec("INSERT INTO users (email, password, username, isverified, uniqueid) VALUES ($1, $2, $3, $4, $5)", user.Email, hash, user.Username, false, u_id); err != nil {
+				if err = helpers.CreateUser(user.Email, hash, user.Username, u_id); err != nil {
 					if strings.HasSuffix(err.Error(), "\"users_email_key\"") {
 						return c.Status(409).JSON(fiber.Map{
 							"message": "user already exists",
@@ -48,7 +47,7 @@ func Signup(c *fiber.Ctx) error {
 						"message": "Unable to create user" + err.Error(),
 					})
 				}
-				err := db.RedisClient.Set(db.Ctx, u_id, user.Email, 0).Err()
+				err := helpers.SetUserId(u_id, user.Email)
 				if err != nil {
 					return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 						"message": "Unable to create user" + err.Error(),

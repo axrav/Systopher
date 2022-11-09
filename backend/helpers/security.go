@@ -20,7 +20,7 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func CompareHashAndPassword(password string, email string) (bool, error) {
-	rows, err := db.Db.Query(`SELECT "password" FROM USERS where email=$1`, email)
+	rows, err := db.Pgres.Query(`SELECT "password" FROM USERS where email=$1`, email)
 	if err != nil {
 		return false, err
 	}

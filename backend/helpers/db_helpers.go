@@ -8,7 +8,7 @@ import (
 )
 
 func CheckServerAndAdd(server *types.Server) error {
-	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
+	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -24,7 +24,7 @@ func CheckServerAndAdd(server *types.Server) error {
 		test, err := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
 		if test {
 			// insert server to database
-			_, err = db.Db.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
+			_, err = db.Pgres.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -44,7 +44,7 @@ func CheckServerAndAdd(server *types.Server) error {
 
 func CheckServerAndDelete(server *types.Server) error {
 
-	rows, err := db.Db.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
+	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -56,7 +56,7 @@ func CheckServerAndDelete(server *types.Server) error {
 	}
 	if Ipaddr == server.Ip {
 		// delete server from database
-		_, err = db.Db.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
+		_, err = db.Pgres.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 		if err != nil {
 			fmt.Println(err)
 			return err
@@ -67,7 +67,7 @@ func CheckServerAndDelete(server *types.Server) error {
 }
 
 func GetServers(email string) []types.Server {
-	rows, err := db.Db.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
+	rows, err := db.Pgres.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -82,4 +82,31 @@ func GetServers(email string) []types.Server {
 		servers = append(servers, server)
 	}
 	return servers
+}
+
+func CreateUser(email string, hash string, username string, u_id string) error {
+	_, err := db.Pgres.Exec("INSERT INTO users (email, password, username, isverified, uniqueid) VALUES ($1, $2, $3, $4, $5)", email, hash, username, false, u_id)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func SetUserId(u_id string, email string) error {
+	err := db.RedisClient.Set(db.Ctx, u_id, email, 0).Err()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func SetVerify(email string) error {
+	_, err := db.Pgres.Exec("UPDATE users SET isverified=$1 WHERE email=$2", true, email)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }

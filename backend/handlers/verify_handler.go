@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +29,7 @@ func Verify(c *fiber.Ctx) error {
 		}
 		verified := helpers.VerifyOtp(resp.Email, resp.Otp)
 		if verified {
-			if _, err := db.Db.Exec("UPDATE users SET isverified = true WHERE email = $1", resp.Email); err != nil {
+			if err := helpers.SetVerify(resp.Email); err != nil {
 				fmt.Println(err)
 				return c.Status(500).JSON(fiber.Map{
 					"message": "Internal server error",

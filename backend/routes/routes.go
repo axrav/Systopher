@@ -19,7 +19,7 @@ func SetupRoutes(app *fiber.App) {
 	auth.Post("/signup", handlers.Signup)
 	auth.Post("/resendotp", handlers.ResendOTP)
 	auth.Post("/verify", handlers.Verify)
-	// auth.Post("/forget", middleware.VerifyMiddleware, handlers.Forgetpassword)
+	auth.Post("/forget", middleware.VerifyMiddleware, handlers.ForgetPassword)
 
 	// protected routes
 	server := app.Group("/server")
@@ -27,6 +27,7 @@ func SetupRoutes(app *fiber.App) {
 		SigningKey:   []byte(os.Getenv("JWT_SECRET")),
 		ErrorHandler: handlers.ErrorHandler,
 	}))
+	server.Put("/change", handlers.ChangePassword)
 	server.Get("/user", handlers.User)
 	server.Get("/generateToken", handlers.GenerateToken)
 	server.Post("/addserver", handlers.AddServer)
