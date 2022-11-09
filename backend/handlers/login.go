@@ -9,18 +9,20 @@ import (
 )
 
 func Login(c *fiber.Ctx) error {
-	user := c.Locals("loginUser").(*types.User)
+	user := c.Locals("loginUser").(*types.LoginUser)
 	if check, _ := helpers.CompareHashAndPassword(user.Password, user.Email); check {
-		token, err := helpers.GenerateJWT(user.Email)
+		token, err := helpers.GenerateJWT(user.Email, user.Remember)
 		if err != nil {
 			fmt.Println(err)
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": "Internal Server Error",
 			})
 		}
+		data := helpers.GetUserData(user.Email)
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"message": "Logged in",
 			"token":   token,
+			"user":    data,
 		})
 	} else {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

@@ -34,11 +34,20 @@ func CompareHashAndPassword(password string, email string) (bool, error) {
 
 }
 
-func GenerateJWT(email string) (string, error) {
-	claims := jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(time.Hour * 2).Unix(), // 2 hours expiration time
+func GenerateJWT(email string, remember bool) (string, error) {
+	var claims *jwt.MapClaims
+	if remember {
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Hour * 360).Unix(), // 15 days expiration time
+		}
+	} else {
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Minute * 4).Unix(), // 1 hour expiration time
+		}
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {

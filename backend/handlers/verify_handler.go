@@ -36,7 +36,7 @@ func Verify(c *fiber.Ctx) error {
 					"message": "Internal server error",
 				})
 			}
-			token, err := helpers.GenerateJWT(resp.Email)
+			token, err := helpers.GenerateJWT(resp.Email, false)
 			if err != nil {
 				fmt.Println(err)
 				return c.Status(500).JSON(fiber.Map{

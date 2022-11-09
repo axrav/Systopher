@@ -38,7 +38,7 @@ func WebSocketMiddleware(c *fiber.Ctx) error {
 }
 
 func VerifyMiddleware(c *fiber.Ctx) error {
-	user := new(types.User)
+	user := new(types.LoginUser)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Wrong data",

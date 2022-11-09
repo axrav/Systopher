@@ -55,6 +55,7 @@ type User struct {
 type LoginUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Remember bool   `json:"remember"`
 }
 
 type UserData struct {
