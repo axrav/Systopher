@@ -25,58 +25,52 @@ func GenerateOTP() (string, error) {
 	return string(buffer), nil
 }
 
-func SendOtp(email string, otp string) bool {
+func SendOtp(email string) (string, error) {
 	var err error
 	subject, err := base64.StdEncoding.DecodeString("T1RQIC0gU3lzdG9waGVy")
 	if err != nil {
 		fmt.Println(err)
-		return false
+		return "", err
 	}
 	body, err := base64.StdEncoding.DecodeString("T25lIFRpbWUgUGFzc3dvcmQoT1RQKSBmb3IgcmVnaXN0ZXJpbmcgb24gU3lzdG9waGVyIGlzOg==")
 	if err != nil {
 		fmt.Println(err)
-		return false
+		return "", err
 	}
+	otp, err := GenerateOTP()
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
 	final_message := string(body) + fmt.Sprintf("<b> %s </b>", otp)
 	go SendMail(email, string(subject), final_message)
 	if err != nil {
 		fmt.Println(err)
+		return "", err
+	}
+	return otp, nil
+}
+
+func SaveOtp(email string, otp string) bool {
+
+	hash, err := HashPassword(otp)
+	if err != nil {
+		fmt.Println("Error in hashing OTP" + err.Error())
+		return false
+
+	}
+	err = db.RedisClient.Set(db.Ctx, email, hash, 0).Err()
+	if err != nil {
+		fmt.Println("Error in saving OTP" + err.Error())
 		return false
 	}
 	return true
-}
-
-func SendOtpAndSave(email string) bool {
-	otp, err := GenerateOTP()
-
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
-	sent := SendOtp(email, otp)
-
-	if sent {
-		hash, err := HashPassword(otp)
-		if err != nil {
-			fmt.Println("Error in hashing OTP" + err.Error())
-			return false
-
-		}
-		err = db.RedisClient.Set(db.Ctx, email, hash, 0).Err()
-		if err != nil {
-			fmt.Println("Error in saving OTP" + err.Error())
-			return false
-		}
-		return true
-	} else {
-		return false
-	}
 
 }
 
 func VerifyOtp(email, otp string) bool {
 	hash, err := db.RedisClient.Get(db.Ctx, email).Result()
-	fmt.Println("Hash: " + hash)
 	if err != nil {
 		fmt.Println(err)
 		return false

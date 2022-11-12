@@ -36,3 +36,30 @@ func GetEmailFromId(token string) string {
 
 	return email
 }
+
+func CheckUserExists(email string) error {
+	rows, err := db.Pgres.Query(`SELECT "email" FROM users where email=$1`, email)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	var Email string
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&Email)
+	}
+	if Email == email {
+		return nil
+	} else {
+		return fmt.Errorf("user does not exist")
+	}
+}
+
+// func ForgetPassword(email string) error {
+// 	// send email to user with link to reset password
+// 	err := SendForgetPasswordEmail(email)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// }

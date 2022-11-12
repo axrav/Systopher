@@ -74,7 +74,15 @@ func ResendOTP(c *fiber.Ctx) error {
 			})
 		}
 
-		output := helpers.SendOtpAndSave(email.Email)
+		sent, err := helpers.SendOtp(email.Email)
+		if err != nil {
+			fmt.Println(err)
+			return c.Status(500).JSON(fiber.Map{
+				"message": "Internal server error",
+			})
+		}
+		output := helpers.SaveOtp(email.Email, sent)
+
 		if output {
 			return c.JSON(fiber.Map{
 				"message": "OTP sent",

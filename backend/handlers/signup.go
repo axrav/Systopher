@@ -28,8 +28,15 @@ func Signup(c *fiber.Ctx) error {
 				"message": "Internal server error",
 			})
 		} else {
-			sent := helpers.SendOtpAndSave(user.Email)
-			if sent {
+			sent, err := helpers.SendOtp(user.Email)
+			if err != nil {
+				fmt.Println(err)
+				return c.Status(500).JSON(fiber.Map{
+					"message": "Internal server error",
+				})
+			}
+			success := helpers.SaveOtp(user.Email, sent)
+			if success {
 				u_id := helpers.GenerateUserId()
 				if err = helpers.CreateUser(user.Email, hash, user.Username, u_id); err != nil {
 					if strings.HasSuffix(err.Error(), "\"users_email_key\"") {

@@ -33,6 +33,30 @@ func ChangePassword(c *fiber.Ctx) error {
 	})
 }
 
-func ForgetPassword(c *fiber.Ctx) error {
-	return nil
-}
+// func ForgetPassword(c *fiber.Ctx) error {
+// 	email := new(types.Email)
+// 	if err := c.BodyParser(email); err != nil {
+// 		return c.Status(500).JSON(fiber.Map{
+// 			"message": "Wrong data",
+// 		})
+// 	} else {
+// 		if email.Email == "" {
+// 			return c.Status(400).JSON(fiber.Map{
+// 				"message": "Missing email",
+// 			})
+// 		}
+// 	}
+// 	err := helpers.CheckUserExists(email.Email)
+// 	if err != nil {
+// 		return c.Status(401).JSON(fiber.Map{
+// 			"error": err.Error(),
+// 		})
+// 	}
+// 	err = helpers.ForgetPassword(email.Email)
+// 	if err != nil {
+// 		return c.Status(401).JSON(fiber.Map{
+// 			"error": err.Error(),
+// 		})
+// 	}
+
+// }
