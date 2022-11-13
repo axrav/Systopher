@@ -34,7 +34,7 @@ func CompareHashAndPassword(password string, email string) (bool, error) {
 
 }
 
-func GenerateJWT(email string, remember bool) (string, error) {
+func GenerateJWT(email string, remember bool, forType string) (string, error) {
 	var claims *jwt.MapClaims
 	if remember {
 		claims = &jwt.MapClaims{
@@ -49,7 +49,17 @@ func GenerateJWT(email string, remember bool) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	var secret string
+	if forType == "browse" {
+		secret = os.Getenv("BROWSE_SECRET")
+	} else {
+		secret = os.Getenv("FORGET_SECRET")
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Minute * 10).Unix(), // 10 minutes expiration time
+		}
+	}
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}

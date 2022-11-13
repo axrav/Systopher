@@ -70,6 +70,7 @@ type Email struct {
 }
 
 type Password struct {
-	Password    string `json:"password"`
+	Password    string `json:"password,omitempty"`
 	NewPassword string `json:"new_password"`
+	OTP         string `json:"otp,omitempty"`
 }

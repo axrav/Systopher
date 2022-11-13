@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"fmt"
 	"os"
 
 	gomail "gopkg.in/gomail.v2"
@@ -24,22 +23,6 @@ func SendMail(email string, subject string, body string) error {
 	if err != nil {
 		return err
 	}
-	return nil
-
-}
-
-func SendForgetPasswordEmail(email string) error {
-	otp, err := GenerateOTP()
-	if err != nil {
-		return err
-	}
-
-	go SendMail(email, "Password Reset", "Hello, <br> Your OTP for resetting password is: <b>"+otp+"</b>")
-	success := SaveOtp(email, otp)
-	if !success {
-		return fmt.Errorf("error while saving otp")
-	}
-
 	return nil
 
 }

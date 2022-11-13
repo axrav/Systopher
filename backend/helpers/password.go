@@ -36,34 +36,18 @@ func UpdatePassword(password string, email string) error {
 	return nil
 }
 
-// func CheckUserExists(email string) bool {
-// 	row, err := db.Db.Query("SELECT email FROM users where email=$1", email)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	for row.Next() {
-// 		return true
-// 	}
-// 	return false
-// }
+func SendForgetPasswordEmail(email string) error {
+	otp, err := GenerateOTP()
+	if err != nil {
+		return err
+	}
 
-// func ForgetPasswordAndSendOTP(email string) bool {
-// 	if CheckUserExists(email) {
-// 		otp, err := GenerateOTP()
-// 		if err != nil {
-// 			fmt.Println(err)
-// 			return false
-// 		}
-// 		err = db.RedisClient.Set(db.Ctx, email, otp, 0).Err()
-// 		if err != nil {
-// 			fmt.Println(err)
-// 			return false
-// 		}
-// 		sent := SendForgetMail(email, otp)
-// 		if sent {
-// 			return true
-// 		}
+	go SendMail(email, "Password Reset", "Hello, <br> Your OTP for resetting Systopher's password is: <b>"+otp+"</b>")
+	success := SaveOtp(email, otp)
+	if !success {
+		return fmt.Errorf("error while saving otp")
+	}
 
-// 	}
-// 	return false
-// }
+	return nil
+
+}

@@ -19,8 +19,13 @@ func SetupRoutes(app *fiber.App) {
 	auth.Post("/signup", handlers.Signup)
 	auth.Post("/resendotp", handlers.ResendOTP)
 	auth.Post("/verify", handlers.Verify)
-	// auth.Post("/forget", middleware.VerifyMiddleware, handlers.ForgetPassword)
-
+	auth.Post("/reset", handlers.ForgetPassword)
+	forget := app.Group("/forget")
+	forget.Use(jwtware.New(jwtware.Config{
+		SigningKey:   []byte(os.Getenv("FORGET_SECRET")),
+		ErrorHandler: handlers.ErrorHandler,
+	}))
+	forget.Post("/", handlers.GenerateNewPassword)
 	// protected routes
 	server := app.Group("/server")
 	server.Use(jwtware.New(jwtware.Config{
