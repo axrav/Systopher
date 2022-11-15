@@ -4,85 +4,7 @@ import (
 	"fmt"
 
 	"github.com/axrav/Systopher/backend/db"
-	"github.com/axrav/Systopher/backend/types"
 )
-
-func CheckServerAndAdd(server *types.Server) error {
-	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	var Ipaddr string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&Ipaddr)
-	}
-	if Ipaddr == server.Ip {
-		return fmt.Errorf("server already exists")
-	} else {
-		test, err := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
-		if test {
-			// insert server to database
-			_, err = db.Pgres.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
-			out := SaveServerToken("http://"+server.Ip+":"+server.Port, server.Token)
-			if out {
-				return nil
-			} else {
-				return fmt.Errorf("error saving server token")
-			}
-		} else {
-			return err
-		}
-	}
-
-}
-
-func CheckServerAndDelete(server *types.Server) error {
-
-	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	var Ipaddr string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&Ipaddr)
-	}
-	if Ipaddr == server.Ip {
-		// delete server from database
-		_, err = db.Pgres.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-
-	}
-	return nil
-}
-
-func GetServers(email string) []types.Server {
-	rows, err := db.Pgres.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer rows.Close()
-	var servers []types.Server
-	for rows.Next() {
-		var server types.Server
-		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name, &server.Owner)
-		if err != nil {
-			fmt.Println(err)
-		}
-		servers = append(servers, server)
-	}
-	return servers
-}
 
 func CreateUser(email string, hash string, username string, u_id string) error {
 	_, err := db.Pgres.Exec("INSERT INTO users (email, password, username, isverified, uniqueid) VALUES ($1, $2, $3, $4, $5)", email, hash, username, false, u_id)
@@ -95,15 +17,6 @@ func CreateUser(email string, hash string, username string, u_id string) error {
 
 func SetUserId(u_id string, email string) error {
 	err := db.RedisClient.Set(db.Ctx, u_id, email, 0).Err()
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
-}
-
-func SetVerify(email string) error {
-	_, err := db.Pgres.Exec("UPDATE users SET isverified=$1 WHERE email=$2", true, email)
 	if err != nil {
 		fmt.Println(err)
 		return err

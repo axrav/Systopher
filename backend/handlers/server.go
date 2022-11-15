@@ -36,23 +36,6 @@ func AddServer(c *fiber.Ctx) error {
 			return c.Status(502).JSON(fiber.Map{
 				"message": err.Error()})
 
-			// might use them later for debugging purposes
-
-			// if strings.HasSuffix(err.Error(), "unable to connect to server") || strings.HasSuffix(err.Error(), "running?") {
-			// 	return c.Status(502).JSON(fiber.Map{
-			// 		"message": "Unable to connect to server",
-			// 	})
-
-			// } else if strings.HasPrefix(err.Error(), "timeout") {
-			// 	return c.Status(504).JSON(fiber.Map{
-			// 		"message": "Timeout, PORT not exposed",
-			// 	})
-
-			// } else {
-			// 	return c.Status(500).JSON(fiber.Map{
-			// 		"message": "Internal Server Error",
-			// 	})
-			// }
 		}
 		return c.Status(200).JSON(fiber.Map{
 			"message": "added server successfully",

@@ -31,4 +31,9 @@ func InitPostgres() {
 	if err != nil {
 		panic(err)
 	}
+	_, err = Pgres.Exec("CREATE TABLE IF NOT EXISTS admins (id SERIAL PRIMARY KEY, email TEXT NOT NULL UNIQUE )")
+	if err != nil {
+		panic(err)
+	}
+
 }

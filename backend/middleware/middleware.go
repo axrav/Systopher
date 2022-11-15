@@ -59,3 +59,15 @@ func VerifyMiddleware(c *fiber.Ctx) error {
 	c.Locals("loginUser", user)
 	return c.Next()
 }
+
+func AdminMiddleware(c *fiber.Ctx) error {
+	email := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
+	isAdmin := helpers.GetAdmin(email)
+	if !isAdmin {
+		return c.Status(401).JSON(fiber.Map{
+			"message": "Unauthorized",
+		})
+	}
+	return c.Next()
+
+}

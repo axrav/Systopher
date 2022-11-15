@@ -88,7 +88,7 @@ func GenerateNewPassword(c *fiber.Ctx) error {
 	verify := helpers.VerifyOtp(email, password.OTP)
 	if verify {
 
-		err := helpers.UpdatePassword(email, password.NewPassword)
+		err := helpers.UpdatePassword(password.NewPassword, email)
 		if err != nil {
 			return c.Status(401).JSON(fiber.Map{
 				"error": err.Error(),

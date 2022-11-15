@@ -76,9 +76,6 @@ func VerifyOtp(email, otp string) bool {
 		return false
 	}
 	check := CheckPasswordHash(otp, hash)
-	if check { // if otp is correct
-		go SendMail(email, "Welcome to Systopher", "<b>You have successfully signed up to Systopher and your account is verified now.</b> \n\nYou can now login to your account and start using Systopher. \n\n\nThank you for choosing Systopher. Have a great day!")
-	} // this message needs to be changed to a better one with proper formatting
 	return check
 }
 
@@ -93,4 +90,14 @@ func GetVerified(email string) bool {
 		rows.Scan(&verified)
 	}
 	return verified
+}
+
+func SetVerify(email string) error {
+	_, err := db.Pgres.Exec("UPDATE users SET isverified=$1 WHERE email=$2", true, email)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	go SendMail(email, "Welcome to Systopher", "<b>You have successfully signed up to Systopher and your account is verified now.</b> \n\nYou can now login to your account and start using Systopher. \n\n\nThank you for choosing Systopher. Have a great day!")
+	return nil
 }

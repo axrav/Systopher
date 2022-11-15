@@ -51,7 +51,7 @@ func GenerateJWT(email string, remember bool, forType string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	var secret string
 	if forType == "browse" {
-		secret = os.Getenv("BROWSE_SECRET")
+		secret = os.Getenv("JWT_SECRET")
 	} else {
 		secret = os.Getenv("FORGET_SECRET")
 		claims = &jwt.MapClaims{
