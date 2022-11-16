@@ -44,7 +44,7 @@ func GenerateJWT(email string, remember bool, forType string) (string, error) {
 	} else {
 		claims = &jwt.MapClaims{
 			"email": email,
-			"exp":   time.Now().Add(time.Minute * 4).Unix(), // 1 hour expiration time
+			"exp":   time.Now().Add(time.Hour * 1).Unix(), // 1 hour expiration time
 		}
 	}
 
