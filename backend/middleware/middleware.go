@@ -71,3 +71,27 @@ func AdminMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 
 }
+
+func SignupChecks(c *fiber.Ctx) error {
+	user := new(types.User)
+	if err := c.BodyParser(user); err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Wrong data",
+		})
+	} else {
+		if user.Email == "" || user.Password == "" || user.Username == "" {
+			return c.Status(400).JSON(fiber.Map{
+				"message": "Missing email, password or name",
+			})
+		}
+	}
+	err := helpers.UserCheckers(user)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+	c.Locals("user", user)
+	return c.Next()
+
+}
