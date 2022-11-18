@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/axrav/Systopher/microservice/helpers"
+	"github.com/axrav/Systopher/servopher/helpers"
 	"github.com/gofiber/fiber/v2"
 )
 

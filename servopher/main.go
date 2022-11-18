@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/axrav/Systopher/microservice/helpers"
-	"github.com/axrav/Systopher/microservice/routes"
+	"github.com/axrav/Systopher/servopher/helpers"
+	"github.com/axrav/Systopher/servopher/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
