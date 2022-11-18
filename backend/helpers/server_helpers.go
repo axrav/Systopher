@@ -15,14 +15,6 @@ const charset = "abcdefghijklmnopqrstuvwxyz" +
 var seededRand *rand.Rand = rand.New(
 	rand.NewSource(time.Now().UnixNano()))
 
-func GenerateServerToken() string {
-	b := make([]byte, 10)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return "SYSTO-" + string(b)
-}
-
 func SaveServerToken(ip string, token string) bool {
 	if err := db.RedisClient.Set(db.Ctx, ip, token, 0).Err(); err != nil {
 		fmt.Println(err)
@@ -31,12 +23,12 @@ func SaveServerToken(ip string, token string) bool {
 	return true
 }
 
-func GenerateUserId() string {
+func GenerateId(typeof string) string {
 	b := make([]byte, 10)
 	for i := range b {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
-	return "USER-" + string(b)
+	return typeof + string(b)
 }
 
 func CheckServerAndDelete(server *types.Server) error {

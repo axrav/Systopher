@@ -59,10 +59,11 @@ type LoginUser struct {
 }
 
 type UserData struct {
-	Email    string   `json:"email"`
-	Username string   `json:"username"`
-	UniqueID string   `json:"unique_id"`
-	Servers  []Server `json:"servers"`
+	Email     string   `json:"email"`
+	Username  string   `json:"username"`
+	UniqueID  string   `json:"unique_id"`
+	Servers   []Server `json:"servers"`
+	RandomKey string   `json:"random_key"`
 }
 
 type Email struct {

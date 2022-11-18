@@ -17,12 +17,18 @@ func GetUserData(email string) *types.UserData {
 	for row.Next() {
 		row.Scan(&username, &uniqueID)
 	}
-
+	key := GenerateId("WS-")
+	err = SetUserId(key, email)
+	if err != nil {
+		fmt.Println(err)
+		return &types.UserData{}
+	}
 	return &types.UserData{
-		Email:    email,
-		Username: username,
-		UniqueID: uniqueID,
-		Servers:  GetServers(email),
+		Email:     email,
+		Username:  username,
+		UniqueID:  uniqueID,
+		Servers:   GetServers(email),
+		RandomKey: key,
 	}
 
 }
@@ -54,12 +60,3 @@ func CheckUserExists(email string) error {
 		return fmt.Errorf("user does not exist")
 	}
 }
-
-// func ForgetPassword(email string) error {
-// 	// send email to user with link to reset password
-// 	err := SendForgetPasswordEmail(email)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// }

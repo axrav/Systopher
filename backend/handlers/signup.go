@@ -28,7 +28,7 @@ func Signup(c *fiber.Ctx) error {
 				"message": "Internal server error",
 			})
 		} else {
-			u_id := helpers.GenerateUserId()
+			u_id := helpers.GenerateId("USER-")
 			if err = helpers.CreateUser(user.Email, hash, user.Username, u_id); err != nil {
 				if strings.HasSuffix(err.Error(), "\"users_email_key\"") {
 					return c.Status(409).JSON(fiber.Map{

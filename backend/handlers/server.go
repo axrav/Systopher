@@ -11,7 +11,7 @@ import (
 
 func GenerateToken(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{
-		"token": helpers.GenerateServerToken(),
+		"token": helpers.GenerateId("SYSTO-"),
 	})
 }
 
