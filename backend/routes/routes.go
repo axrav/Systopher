@@ -46,7 +46,7 @@ func SetupRoutes(app *fiber.App) {
 	// user routes
 	user := api.Group("/user")
 	user.Put("/change", handlers.ChangePassword)
-	user.Get("/user", handlers.User)
+	user.Get("/", handlers.User)
 
 	// websocket route for server
 	app.Get("/ws", middleware.WebSocketMiddleware, websocket.New(handlers.ServerWS))
