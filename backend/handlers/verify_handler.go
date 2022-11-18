@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -12,44 +13,32 @@ func Verify(c *fiber.Ctx) error {
 	resp := new(types.OTPResponse)
 	if err := c.BodyParser(resp); err != nil {
 		fmt.Println(err)
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Wrong data",
-		})
+		return c.Status(500).JSON(errors.InvalidData.Merror())
 	} else {
 		if resp.Otp == "" || resp.Email == "" {
-			return c.Status(400).JSON(fiber.Map{
-				"message": "Missing email or otp",
-			})
+			return c.Status(400).JSON(errors.InvalidData.Merror())
 		}
 		out := helpers.GetVerified(resp.Email)
 		if out {
-			return c.Status(409).JSON(fiber.Map{
-				"message": "the user is already verified",
-			})
+			return c.Status(409).JSON(errors.AlreadyVerified.Merror())
 		}
 		verified := helpers.VerifyOtp(resp.Email, resp.Otp)
 		if verified {
 			if err := helpers.SetVerify(resp.Email); err != nil {
 				fmt.Println(err)
-				return c.Status(500).JSON(fiber.Map{
-					"message": "Internal server error",
-				})
+				return c.Status(500).JSON(errors.InternalServerError.Merror())
 			}
 			token, err := helpers.GenerateJWT(resp.Email, false, "browse")
 			if err != nil {
 				fmt.Println(err)
-				return c.Status(500).JSON(fiber.Map{
-					"message": "Internal server error",
-				})
+				return c.Status(500).JSON(errors.InternalServerError.Merror())
 			}
 			return c.JSON(fiber.Map{
 				"message": "Verified",
 				"token":   token,
 			})
 		} else {
-			return c.Status(400).JSON(fiber.Map{
-				"message": "Wrong otp",
-			})
+			return c.Status(400).JSON(errors.InvalidOtp.Merror())
 		}
 	}
 }
@@ -58,28 +47,20 @@ func ResendOTP(c *fiber.Ctx) error {
 	email := new(types.Email)
 	if err := c.BodyParser(email); err != nil {
 		fmt.Println(err)
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Wrong data",
-		})
+		return c.Status(500).JSON(errors.InvalidData.Merror())
 	} else {
 		if email.Email == "" {
-			return c.Status(400).JSON(fiber.Map{
-				"message": "Missing email",
-			})
+			return c.Status(400).JSON(errors.InvalidData.Merror())
 		}
 		out := helpers.GetVerified(email.Email)
 		if out {
-			return c.Status(409).JSON(fiber.Map{
-				"message": "the user is already verified",
-			})
+			return c.Status(409).JSON(errors.AlreadyVerified.Merror())
 		}
 
 		sent, err := helpers.SendOtp(email.Email)
 		if err != nil {
 			fmt.Println(err)
-			return c.Status(500).JSON(fiber.Map{
-				"message": "Internal server error",
-			})
+			return c.Status(500).JSON(errors.InternalServerError.Merror())
 		}
 		output := helpers.SaveOtp(email.Email, sent)
 
@@ -89,7 +70,5 @@ func ResendOTP(c *fiber.Ctx) error {
 			})
 		}
 	}
-	return c.Status(500).JSON(fiber.Map{
-		"message": "Internal server error",
-	})
+	return c.Status(500).JSON(errors.InternalServerError.Merror())
 }

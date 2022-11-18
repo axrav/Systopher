@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
@@ -31,23 +32,23 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.Ser
 				key, err := db.RedisClient.Get(db.Ctx, server).Result()
 				if err != nil {
 					fmt.Println(err)
-					c.WriteJSON(fiber.Map{"server": server, "errorType": "server not found"})
+					c.WriteJSON(fiber.Map{"server": server, "error": errors.NotFound.Error()})
 				}
 				req, err := http.NewRequest("GET", server+"/stats", nil)
 				if err != nil {
 					fmt.Println(err)
-					c.WriteJSON(fiber.Map{"server": server, "errorType": "GET REQUEST"})
+					c.WriteJSON(fiber.Map{"server": server, "error": "GET REQUEST"})
 				}
 				req.Header.Set("X-API-KEY", key)
 				resp, err := client.Do(req)
 				if err != nil {
 					fmt.Println(err)
-					c.WriteJSON(fiber.Map{"server": server, "errorType": "NoResponse"})
+					c.WriteJSON(fiber.Map{"server": server, "error": errors.NoResponse.Error()})
 				} else {
 					body, err := io.ReadAll(resp.Body)
 					if err != nil {
 						fmt.Println(err)
-						c.WriteJSON(fiber.Map{"server": server, "errorType": "read"})
+						c.WriteJSON(fiber.Map{"server": server, "error": "read"})
 					}
 					err = json.Unmarshal(body, &data)
 					data.Ip = server
@@ -55,7 +56,7 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.Ser
 						fmt.Println(err)
 					}
 					if data.Ping == "" {
-						c.WriteJSON(fiber.Map{"server": server, "errorType": "TOKEN MISMATCH"})
+						c.WriteJSON(fiber.Map{"server": server, "error": "TOKEN MISMATCH"})
 					} else {
 						stats = append(stats, data)
 						data = types.ServerData{}
@@ -99,7 +100,7 @@ func TestRequest(ip string, port string, token string) (bool, error) {
 	} else if resp.StatusCode == 401 {
 		return false, fmt.Errorf("the token is invalid")
 	} else {
-		return false, fmt.Errorf("the server is not responding")
+		return false, errors.NoResponse.Error()
 	}
 	// return false, fmt.Errorf("error sending request")
 }

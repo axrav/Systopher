@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -75,14 +76,10 @@ func GenerateNewPassword(c *fiber.Ctx) error {
 	email := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
 	password := new(types.Password)
 	if err := c.BodyParser(password); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Wrong data",
-		})
+		return c.Status(500).JSON(errors.InvalidData.Merror())
 	} else {
 		if password.NewPassword == "" || password.OTP == "" {
-			return c.Status(400).JSON(fiber.Map{
-				"message": "Missing new password or otp",
-			})
+			return c.Status(400).JSON(errors.InvalidData.Merror())
 		}
 	}
 	verify := helpers.VerifyOtp(email, password.OTP)
@@ -98,9 +95,7 @@ func GenerateNewPassword(c *fiber.Ctx) error {
 			"message": "Password changed",
 		})
 	} else {
-		return c.Status(498).JSON(fiber.Map{
-			"error": "Wrong otp",
-		})
+		return c.Status(498).JSON(errors.InvalidOtp)
 
 	}
 }

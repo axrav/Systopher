@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/types"
 )
 
@@ -85,7 +86,7 @@ func CheckServerAndAdd(server *types.Server) error {
 		rows.Scan(&Ipaddr)
 	}
 	if Ipaddr == server.Ip {
-		return fmt.Errorf("server already exists")
+		return errors.AlreadyExists.Error()
 	} else {
 		test, err := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
 		if test {
@@ -99,7 +100,7 @@ func CheckServerAndAdd(server *types.Server) error {
 			if out {
 				return nil
 			} else {
-				return fmt.Errorf("error saving server token")
+				return errors.InternalServerError.Error()
 			}
 		} else {
 			return err

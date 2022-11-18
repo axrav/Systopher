@@ -2,11 +2,12 @@ package helpers
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
+	"unicode"
 
 	emailverifier "github.com/AfterShip/email-verifier"
 	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/types"
 )
 
@@ -20,15 +21,15 @@ func UserCheckers(user *types.User) error {
 		return err
 	}
 	if !res.Syntax.Valid {
-		return fmt.Errorf("invalid email")
+		return errors.InvalidEmail.Error()
 	}
 	userNameExists := CheckUserNameExists(user.Username)
 	if userNameExists != nil {
 		return userNameExists
 	}
 	passwordValidator := CheckPassword(user.Password)
-	if passwordValidator != nil {
-		return fmt.Errorf("password is not valid")
+	if !passwordValidator {
+		return errors.InvalidPassword.Error()
 	}
 	return nil
 
@@ -37,7 +38,7 @@ func UserCheckers(user *types.User) error {
 func CheckUserNameExists(username string) error {
 
 	if len(strings.Split(username, " ")) > 1 {
-		return fmt.Errorf("username should not contain spaces")
+		return errors.InvalidUsername.Error()
 	}
 	rows, err := db.Pgres.Query(`SELECT "username" FROM users where username=$1`, username)
 	if err != nil {
@@ -50,21 +51,35 @@ func CheckUserNameExists(username string) error {
 		rows.Scan(&Username)
 	}
 	if Username == username {
-		return fmt.Errorf("username already exists")
+		return errors.UsernameTaken.Error()
 	} else {
 		return nil
 	}
 
 }
 
-func CheckPassword(password string) error {
-	//restr := regexp.QuoteMeta()
-	// fmt.Println(restr)
-	re, _ := regexp.Compile(`\A(?:[A-Z]|[a-z]|[0-9]|.){8,}`)
-	fmt.Println(password)
-	if re.MatchString(password) {
-		return nil
-	} else {
-		return fmt.Errorf("password is not valid")
+func CheckPassword(password string) bool {
+	var (
+		hasMinLen  = false
+		hasUpper   = false
+		hasLower   = false
+		hasNumber  = false
+		hasSpecial = false
+	)
+	if len(password) >= 7 {
+		hasMinLen = true
 	}
+	for _, char := range password {
+		switch {
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsNumber(char):
+			hasNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			hasSpecial = true
+		}
+	}
+	return hasMinLen && hasUpper && hasLower && hasNumber && hasSpecial
 }

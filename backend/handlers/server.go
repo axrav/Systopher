@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/axrav/Systopher/backend/types"
 	"github.com/gofiber/fiber/v2"
@@ -25,9 +26,7 @@ func AddServer(c *fiber.Ctx) error {
 	} else {
 		newServer.Owner = c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
 		if newServer.Ip == "" || newServer.Port == "" || newServer.Owner == "" || newServer.Token == "" {
-			return c.Status(400).JSON(fiber.Map{
-				"message": "Missing IP/Port/Owner/Token",
-			})
+			return c.Status(400).JSON(errors.InvalidData.Merror())
 		}
 		// check if server already exists in database or not
 		err := helpers.CheckServerAndAdd(newServer)
@@ -45,24 +44,16 @@ func AddServer(c *fiber.Ctx) error {
 func DeleteServer(c *fiber.Ctx) error {
 	server := new(types.Server)
 	if err := c.BodyParser(server); err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Wrong data",
-		})
+		return c.Status(500).JSON(errors.InvalidData.Merror())
 	}
 	if server.Ip == "" {
-		return c.Status(400).JSON(fiber.Map{
-			"message": "Missing IP",
-		})
+		return c.Status(400).JSON(errors.InvalidData.Merror())
 	}
 	server.Owner = c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
 	err := helpers.CheckServerAndDelete(server)
 	if err != nil {
 		fmt.Println(err)
-		return c.Status(500).JSON(fiber.Map{
-			"message": "Internal Server Error",
-		})
+		return c.Status(500).JSON(errors.InternalServerError.Merror())
 	}
-	return c.Status(404).JSON(fiber.Map{
-		"message": "Server not found",
-	})
+	return c.Status(404).JSON(errors.NotFound.Merror())
 }

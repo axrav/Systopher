@@ -2,9 +2,8 @@
 package helpers
 
 import (
-	"fmt"
-
 	"github.com/axrav/Systopher/backend/db"
+	"github.com/axrav/Systopher/backend/errors"
 )
 
 func ChangePassword(email string, oldPassword string, newPassword string) error {
@@ -19,7 +18,7 @@ func ChangePassword(email string, oldPassword string, newPassword string) error 
 		}
 		return nil
 	} else {
-		return fmt.Errorf("wrong password")
+		return errors.InvalidCred.Error()
 	}
 
 }
@@ -47,7 +46,7 @@ func SendForgetPasswordEmail(email string) error {
 	go SendMail(email, "Password Reset", "Hello, <br> Your OTP for resetting Systopher's password is: <b>"+otp+"</b>")
 	success := SaveOtp(email, otp)
 	if !success {
-		return fmt.Errorf("error while saving otp")
+		return errors.InternalServerError.Error()
 	}
 
 	return nil

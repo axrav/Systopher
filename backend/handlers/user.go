@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -19,9 +20,7 @@ func CheckUser(c *fiber.Ctx) error {
 	fmt.Println("username", username)
 	err := helpers.CheckUserNameExists(username)
 	if err != nil {
-		return c.Status(409).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return c.Status(409).JSON(errors.UsernameTaken.Merror())
 	}
 	return c.Status(200).JSON(fiber.Map{
 		"message": "user doesnt exists",
