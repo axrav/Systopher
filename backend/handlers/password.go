@@ -98,7 +98,7 @@ func GenerateNewPassword(c *fiber.Ctx) error {
 			"message": "Password changed",
 		})
 	} else {
-		return c.Status(401).JSON(fiber.Map{
+		return c.Status(498).JSON(fiber.Map{
 			"error": "Wrong otp",
 		})
 
