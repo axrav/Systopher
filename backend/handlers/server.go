@@ -5,7 +5,7 @@ import (
 
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -17,7 +17,7 @@ func GenerateToken(c *fiber.Ctx) error {
 }
 
 func AddServer(c *fiber.Ctx) error {
-	newServer := new(types.Server)
+	newServer := new(models.Server)
 	if err := c.BodyParser(newServer); err != nil {
 		fmt.Println(err)
 		return c.Status(500).JSON(fiber.Map{
@@ -42,7 +42,7 @@ func AddServer(c *fiber.Ctx) error {
 	}
 }
 func DeleteServer(c *fiber.Ctx) error {
-	server := new(types.Server)
+	server := new(models.Server)
 	if err := c.BodyParser(server); err != nil {
 		return c.Status(500).JSON(errors.InvalidData.Merror())
 	}

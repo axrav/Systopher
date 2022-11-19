@@ -5,7 +5,7 @@ import (
 
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,7 +22,7 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func AddAdmin(c *fiber.Ctx) error {
-	email := new(types.Email)
+	email := new(models.Email)
 	if err := c.BodyParser(email); err != nil {
 		fmt.Println("error", err)
 		return c.Status(500).JSON(errors.InternalServerError)

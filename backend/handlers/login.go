@@ -5,12 +5,12 @@ import (
 
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Login(c *fiber.Ctx) error {
-	user := c.Locals("loginUser").(*types.LoginUser)
+	user := c.Locals("loginUser").(*models.LoginUser)
 	if check, _ := helpers.CompareHashAndPassword(user.Password, user.Email); check {
 		token, err := helpers.GenerateJWT(user.Email, user.Remember, "browse")
 		if err != nil {

@@ -5,12 +5,12 @@ import (
 
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Verify(c *fiber.Ctx) error {
-	resp := new(types.OTPResponse)
+	resp := new(models.OTPResponse)
 	if err := c.BodyParser(resp); err != nil {
 		fmt.Println(err)
 		return c.Status(500).JSON(errors.InvalidData.Merror())
@@ -45,7 +45,7 @@ func Verify(c *fiber.Ctx) error {
 }
 
 func ResendOTP(c *fiber.Ctx) error {
-	email := new(types.Email)
+	email := new(models.Email)
 	if err := c.BodyParser(email); err != nil {
 		fmt.Println(err)
 		return c.Status(500).JSON(errors.InvalidData.Merror())

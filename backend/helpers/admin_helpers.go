@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/axrav/Systopher/backend/db"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 )
 
 func GetAdmin(email string) bool {
@@ -25,8 +25,8 @@ func GetAdmin(email string) bool {
 	}
 }
 
-func GetAllUsers() ([]types.UserData, error) {
-	var users []types.UserData
+func GetAllUsers() ([]models.UserData, error) {
+	var users []models.UserData
 	rows, err := db.Pgres.Query(`SELECT "email" FROM users`)
 	for rows.Next() {
 		var email string

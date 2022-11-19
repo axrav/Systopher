@@ -11,12 +11,12 @@ import (
 
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
 
-func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.ServerData, c *websocket.Conn, ctx context.Context) {
+func ServerStats(serverChannel chan []models.Server, dataChannel chan []models.ServerData, c *websocket.Conn, ctx context.Context) {
 	var client http.Client
 	servers := <-serverChannel
 	for {
@@ -24,8 +24,8 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.Ser
 		case <-ctx.Done():
 			return
 		default:
-			var stats []types.ServerData
-			var data types.ServerData
+			var stats []models.ServerData
+			var data models.ServerData
 			for _, server_data := range servers {
 
 				server := "http://" + server_data.Ip + ":" + server_data.Port
@@ -59,7 +59,7 @@ func ServerStats(serverChannel chan []types.Server, dataChannel chan []types.Ser
 						c.WriteJSON(fiber.Map{"server": server, "error": "TOKEN MISMATCH"})
 					} else {
 						stats = append(stats, data)
-						data = types.ServerData{}
+						data = models.ServerData{}
 					}
 				}
 

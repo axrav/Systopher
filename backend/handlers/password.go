@@ -3,14 +3,14 @@ package handlers
 import (
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 func ChangePassword(c *fiber.Ctx) error {
 	email := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
-	password := new(types.Password)
+	password := new(models.Password)
 	if err := c.BodyParser(password); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Wrong data",
@@ -35,7 +35,7 @@ func ChangePassword(c *fiber.Ctx) error {
 }
 
 func ForgetPassword(c *fiber.Ctx) error {
-	email := new(types.Email)
+	email := new(models.Email)
 	if err := c.BodyParser(email); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Wrong data",
@@ -74,7 +74,7 @@ func ForgetPassword(c *fiber.Ctx) error {
 
 func GenerateNewPassword(c *fiber.Ctx) error {
 	email := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
-	password := new(types.Password)
+	password := new(models.Password)
 	if err := c.BodyParser(password); err != nil {
 		return c.Status(500).JSON(errors.InvalidData.Merror())
 	} else {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyz" +
@@ -32,7 +32,7 @@ func GenerateId(typeof string) string {
 	return typeof + string(b)
 }
 
-func CheckServerAndDelete(server *types.Server) error {
+func CheckServerAndDelete(server *models.Server) error {
 
 	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
 	if err != nil {
@@ -56,15 +56,15 @@ func CheckServerAndDelete(server *types.Server) error {
 	return nil
 }
 
-func GetServers(email string) []types.Server {
+func GetServers(email string) []models.Server {
 	rows, err := db.Pgres.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer rows.Close()
-	var servers []types.Server
+	var servers []models.Server
 	for rows.Next() {
-		var server types.Server
+		var server models.Server
 		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name, &server.Owner)
 		if err != nil {
 			fmt.Println(err)
@@ -74,7 +74,7 @@ func GetServers(email string) []types.Server {
 	return servers
 }
 
-func CheckServerAndAdd(server *types.Server) error {
+func CheckServerAndAdd(server *models.Server) error {
 	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
 	if err != nil {
 		fmt.Println(err)

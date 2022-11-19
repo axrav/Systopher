@@ -1,4 +1,4 @@
-package types
+package models
 
 type Server struct {
 	Ip    string `json:"ip_address"`

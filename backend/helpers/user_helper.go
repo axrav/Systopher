@@ -5,10 +5,10 @@ import (
 
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 )
 
-func GetUserData(email string) *types.UserData {
+func GetUserData(email string) *models.UserData {
 	row, err := db.Pgres.Query("SELECT username,uniqueid FROM users where email=$1", email)
 	if err != nil {
 		fmt.Println(err)
@@ -22,9 +22,9 @@ func GetUserData(email string) *types.UserData {
 	err = SetUserId(key, email)
 	if err != nil {
 		fmt.Println(err)
-		return &types.UserData{}
+		return &models.UserData{}
 	}
-	return &types.UserData{
+	return &models.UserData{
 		Email:     email,
 		Username:  username,
 		UniqueID:  uniqueID,

@@ -8,14 +8,14 @@ import (
 	emailverifier "github.com/AfterShip/email-verifier"
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 )
 
 var (
 	verifier = emailverifier.NewVerifier()
 )
 
-func UserCheckers(user *types.User) error {
+func UserCheckers(user *models.User) error {
 	res, err := verifier.Verify(user.Email)
 	if err != nil {
 		return err

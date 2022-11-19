@@ -6,12 +6,12 @@ import (
 
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Signup(c *fiber.Ctx) error {
-	user := new(types.User)
+	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
 		fmt.Println(err)
 		return c.Status(500).JSON(errors.InternalServerError.Merror())

@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -33,7 +33,7 @@ func WebSocketMiddleware(c *fiber.Ctx) error {
 }
 
 func VerifyMiddleware(c *fiber.Ctx) error {
-	user := new(types.LoginUser)
+	user := new(models.LoginUser)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(500).JSON(errors.InternalServerError.Merror())
 	} else {
@@ -60,7 +60,7 @@ func AdminMiddleware(c *fiber.Ctx) error {
 }
 
 func SignupChecks(c *fiber.Ctx) error {
-	user := new(types.User)
+	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(500).JSON(errors.InvalidData.Merror())
 	} else {
