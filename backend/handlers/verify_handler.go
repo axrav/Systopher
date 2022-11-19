@@ -36,6 +36,7 @@ func Verify(c *fiber.Ctx) error {
 			return c.JSON(fiber.Map{
 				"message": "Verified",
 				"token":   token,
+				"user":    helpers.GetUserData(resp.Email),
 			})
 		} else {
 			return c.Status(400).JSON(errors.InvalidOtp.Merror())
