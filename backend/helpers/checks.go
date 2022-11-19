@@ -15,35 +15,35 @@ var (
 	verifier = emailverifier.NewVerifier()
 )
 
-func UserCheckers(user *models.User) error {
+func UserCheckers(user *models.User) errors.Error {
 	res, err := verifier.Verify(user.Email)
 	if err != nil {
-		return err
+		return errors.Error{}
 	}
 	if !res.Syntax.Valid {
-		return errors.InvalidEmail.Error()
+		return errors.InvalidEmail.Merror()
 	}
 	userNameExists := CheckUserNameExists(user.Username)
-	if userNameExists != nil {
+	if userNameExists.Err != nil {
 		return userNameExists
 	}
 	passwordValidator := CheckPassword(user.Password)
 	if !passwordValidator {
-		return errors.InvalidPassword.Error()
+		return errors.InvalidPassword.Merror()
 	}
-	return nil
+	return errors.Error{}
 
 }
 
-func CheckUserNameExists(username string) error {
+func CheckUserNameExists(username string) errors.Error {
 
 	if len(strings.Split(username, " ")) > 1 {
-		return errors.InvalidUsername.Error()
+		return errors.InvalidUsername.Merror()
 	}
 	rows, err := db.Pgres.Query(`SELECT "username" FROM users where username=$1`, username)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return errors.InternalServerError.Merror()
 	}
 	var Username string
 	defer rows.Close()
@@ -51,9 +51,9 @@ func CheckUserNameExists(username string) error {
 		rows.Scan(&Username)
 	}
 	if Username == username {
-		return errors.UsernameTaken.Error()
+		return errors.UsernameTaken.Merror()
 	} else {
-		return nil
+		return errors.Error{}
 	}
 
 }

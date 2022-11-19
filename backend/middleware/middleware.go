@@ -69,10 +69,8 @@ func SignupChecks(c *fiber.Ctx) error {
 		}
 	}
 	err := helpers.UserCheckers(user)
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+	if err.Err != nil {
+		return c.Status(400).JSON(err.Merror())
 	}
 	return c.Next()
 

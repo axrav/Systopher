@@ -19,7 +19,7 @@ func CheckUser(c *fiber.Ctx) error {
 	username := c.Query("username")
 	fmt.Println("username", username)
 	err := helpers.CheckUserNameExists(username)
-	if err != nil {
+	if err.Err != nil {
 		return c.Status(409).JSON(errors.UsernameTaken.Merror())
 	}
 	return c.Status(200).JSON(fiber.Map{
