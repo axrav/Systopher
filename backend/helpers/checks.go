@@ -18,7 +18,7 @@ var (
 func UserCheckers(user *models.User) errors.Error {
 	res, err := verifier.Verify(user.Email)
 	if err != nil {
-		return errors.Error{}
+		return errors.InvalidEmail.Merror()
 	}
 	if !res.Syntax.Valid {
 		return errors.InvalidEmail.Merror()
