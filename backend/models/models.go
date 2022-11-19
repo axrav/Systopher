@@ -1,4 +1,4 @@
-package types
+package models
 
 type Server struct {
 	Ip    string `json:"ip_address"`
@@ -46,7 +46,7 @@ type OTPResponse struct {
 }
 
 type User struct {
-	Username string `json:"username"`
+	Username string `json:"username,omitempty"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	UniqueID string `json:",omitempty"`
@@ -55,15 +55,23 @@ type User struct {
 type LoginUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Remember bool   `json:"remember"`
 }
 
 type UserData struct {
-	Email    string   `json:"email"`
-	Username string   `json:"username"`
-	UniqueID string   `json:"unique_id"`
-	Servers  []Server `json:"servers"`
+	Email     string   `json:"email"`
+	Username  string   `json:"username"`
+	UniqueID  string   `json:"unique_id"`
+	Servers   []Server `json:"servers"`
+	RandomKey string   `json:"random_key"`
 }
 
 type Email struct {
 	Email string `json:"email"`
+}
+
+type Password struct {
+	Password    string `json:"password,omitempty"`
+	NewPassword string `json:"new_password"`
+	OTP         string `json:"otp,omitempty"`
 }

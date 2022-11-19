@@ -20,7 +20,7 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func CompareHashAndPassword(password string, email string) (bool, error) {
-	rows, err := db.Db.Query(`SELECT "password" FROM USERS where email=$1`, email)
+	rows, err := db.Pgres.Query(`SELECT "password" FROM USERS where email=$1`, email)
 	if err != nil {
 		return false, err
 	}
@@ -34,13 +34,32 @@ func CompareHashAndPassword(password string, email string) (bool, error) {
 
 }
 
-func GenerateJWT(email string) (string, error) {
-	claims := jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(time.Hour * 2).Unix(), // 2 hours expiration time
+func GenerateJWT(email string, remember bool, forType string) (string, error) {
+	var claims *jwt.MapClaims
+	if remember {
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Hour * 360).Unix(), // 15 days expiration time
+		}
+	} else {
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Hour * 1).Unix(), // 1 hour expiration time
+		}
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	var secret string
+	if forType == "browse" {
+		secret = os.Getenv("JWT_SECRET")
+	} else {
+		secret = os.Getenv("FORGET_SECRET")
+		claims = &jwt.MapClaims{
+			"email": email,
+			"exp":   time.Now().Add(time.Minute * 10).Unix(), // 10 minutes expiration time
+		}
+	}
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}
