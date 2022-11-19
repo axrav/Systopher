@@ -1,19 +1,23 @@
 import React, { useEffect } from "react";
-import Header from "../components/Header";
-import LoginForm from "../components/LoginPage/LoginForm";
 import { Alert } from "@mantine/core";
+import { useSelector } from "react-redux";
 import { IconAlertCircle } from "@tabler/icons";
 import Router from "next/router";
+import SignUpForm from "../../components/SignUpPage/SignUpForm";
 
-export default function login() {
+export default function signup() {
   const [error, setError] = React.useState("");
   const [showError, setShowError] = React.useState(false);
 
-  //   useEffect(() => {
-  //     if (localStorage.getItem("token") !== null) {
-  //       Router.push("/dashboard");
-  //     }
-  //   });
+  const signUpStatus = useSelector((state: any) => state.auth.signedUp);
+
+  console.log(signUpStatus);
+
+  useEffect(() => {
+    if (signUpStatus) {
+      Router.push("/signup/verify");
+    }
+  }, [signUpStatus]);
 
   return (
     <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between overflow-y-scroll">
@@ -30,7 +34,7 @@ export default function login() {
         </Alert>
       </div>
       <div className="md:w-1/2 w-full h-full flex items-center justify-center">
-        <LoginForm
+        <SignUpForm
           setShowError={setShowError}
           error={error}
           setError={setError}

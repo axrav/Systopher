@@ -1,13 +1,13 @@
-import React from "react";
-import LoginInput from "./LoginInput";
+import React, { useEffect } from "react";
+import SignUpInput from "./SignUpInput";
 import Router from "next/router";
 import api from "../../api";
 import { Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import { clearErrorMessage, signIn } from "../../redux/actions/UserAuth";
+import { clearErrorMessage, signUp } from "../../redux/actions/UserAuth";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 
-function LoginForm({
+function SignUpForm({
   error,
   setError,
   setShowError,
@@ -18,7 +18,10 @@ function LoginForm({
 }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [rePassword, setRePassword] = React.useState("");
+  const [passwordVerify, setPasswordVerify] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [userName, setUserName] = React.useState("");
 
   const dispatch = useAppDispatch();
 
@@ -29,13 +32,30 @@ function LoginForm({
   console.log(userError);
 
   const handleSubmit = async () => {
-    setLoading(true);
-    dispatch(signIn(email, password, setLoading, setError, setShowError));
+    if (passwordVerify) {
+      setLoading(true);
+      dispatch(
+        signUp(email, userName, password, setLoading, setError, setShowError)
+      );
+    } else {
+      setError("The passwords entered do not match");
+      setShowError(true);
+    }
   };
 
   if (user) {
     Router.push("/dashboard");
   }
+
+  useEffect(() => {
+    if (password !== "" && rePassword !== "") {
+      if (password === rePassword) {
+        setPasswordVerify(true);
+      } else {
+        setPasswordVerify(false);
+      }
+    }
+  }, [rePassword, password]);
 
   return (
     <div className="w-10/12 bg-gray-900 h-fit flex flex-col space-y-12">
@@ -44,7 +64,7 @@ function LoginForm({
           Welcome to Systopher
         </h1>
         <p className="text-gray-400 font-light md:text-2xl text-lg">
-          Login to your account
+          Sign Up for a new Account!
         </p>
       </div>
       <form
@@ -52,7 +72,7 @@ function LoginForm({
         className="flex flex-col space-y-8"
         action=""
       >
-        <LoginInput
+        <SignUpInput
           inputType={"email"}
           inputPlaceholder={"someone@someone.com"}
           inputLabel={"Email"}
@@ -60,12 +80,28 @@ function LoginForm({
           setValue={setEmail}
           error={error}
         />
-        <LoginInput
+        <SignUpInput
+          inputType={"text"}
+          inputPlaceholder={"myuser"}
+          inputLabel={"Username"}
+          value={userName}
+          setValue={setUserName}
+          error={error}
+        />
+        <SignUpInput
           inputType={"password"}
           inputPlaceholder={"Enter Your Password"}
           inputLabel={"Password"}
           value={password}
           setValue={setPassword}
+          error={error}
+        />
+        <SignUpInput
+          inputType={"password"}
+          inputPlaceholder={"Re-Enter Your Password"}
+          inputLabel={"Re Enter Password"}
+          value={rePassword}
+          setValue={setRePassword}
           error={error}
         />
         <Button
@@ -75,19 +111,19 @@ function LoginForm({
           loading={loading}
           onClick={handleSubmit}
         >
-          Login
+          Sign Up
         </Button>
       </form>
       <div className="">
         <p className="text-gray-500 font-light md:text-xl">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <button
             className="text-yellow-500"
             onClick={() => {
               Router.push("/signup");
             }}
           >
-            Sign Up
+            Login
           </button>
         </p>
       </div>
@@ -95,4 +131,4 @@ function LoginForm({
   );
 }
 
-export default LoginForm;
+export default SignUpForm;
