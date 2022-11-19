@@ -10,7 +10,7 @@ function index({ setOTP }: { setOTP: any }) {
   const [otp6, setOtp6] = React.useState("");
 
   useEffect(() => {
-    document.getElementById("otp1").focus();
+    document.getElementById("otp1")?.focus();
   }, []);
 
   useEffect(() => {

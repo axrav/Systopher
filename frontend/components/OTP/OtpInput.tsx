@@ -21,14 +21,14 @@ function OtpInput({
       onKeyUp={(e) => {
         if (e.keyCode === 8) {
           if (otpId !== 1) {
-            document.getElementById(`otp${otpId - 1}`).focus();
+            document.getElementById(`otp${otpId - 1}`)?.focus();
           }
         } else {
           if (otpId !== 6 && e.keyCode >= 47 && e.keyCode <= 58) {
-            document.getElementById(`otp${otpId + 1}`).focus();
+            document.getElementById(`otp${otpId + 1}`)?.focus();
           } else {
-            document.getElementById(`otp${otpId}`).blur();
-            document.getElementById(`verifybtn`).focus();
+            document.getElementById(`otp${otpId}`)?.blur();
+            document.getElementById(`verifybtn`)?.focus();
           }
         }
       }}

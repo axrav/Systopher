@@ -20,7 +20,7 @@ function verify() {
     if (localStorage.getItem("email") === null) {
       Router.push("/signup");
     } else {
-      setEmail(localStorage.getItem("email"));
+      setEmail(localStorage.getItem("email") || "");
     }
 
     if (localStorage.getItem("token") !== null) {
