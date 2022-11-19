@@ -11,30 +11,52 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
+	// status check
 	app.Get("/status", func(c *fiber.Ctx) error {
 		return c.SendString("Online")
 	})
+
+	// auth routes
 	auth := app.Group("/auth")
+	auth.Get("/check", handlers.CheckUser)
 	auth.Post("/login", middleware.VerifyMiddleware, handlers.Login)
-	auth.Post("/signup", handlers.Signup)
+	auth.Post("/signup", middleware.SignupChecks, handlers.Signup)
 	auth.Post("/resendotp", handlers.ResendOTP)
 	auth.Post("/verify", handlers.Verify)
-
+	auth.Post("/reset", handlers.ForgetPassword)
+	forget := app.Group("/forget")
+	forget.Use(jwtware.New(jwtware.Config{
+		SigningKey:   []byte(os.Getenv("FORGET_SECRET")),
+		ErrorHandler: handlers.ErrorHandler,
+	}))
+	forget.Post("/", handlers.GenerateNewPassword)
 	// protected routes
-	server := app.Group("/server")
-	server.Use(jwtware.New(jwtware.Config{
+	api := app.Group("/api")
+	api.Use(jwtware.New(jwtware.Config{
 		SigningKey:   []byte(os.Getenv("JWT_SECRET")),
 		ErrorHandler: handlers.ErrorHandler,
 	}))
-	server.Get("/user", handlers.User)
-	server.Get("/generateToken", handlers.GenerateToken)
+
+	// server routes
+	server := api.Group("/server")
 	server.Post("/addserver", handlers.AddServer)
+	server.Get("/generateToken", handlers.GenerateToken)
+
 	server.Delete("/deleteserver", middleware.ServerMiddleware, handlers.DeleteServer)
 
-	// protected routes
+	// user routes
+	user := api.Group("/user")
+	user.Put("/change", handlers.ChangePassword)
+	user.Get("/", handlers.User)
+
 	// websocket route for server
 	app.Get("/ws", middleware.WebSocketMiddleware, websocket.New(handlers.ServerWS))
 
+	// admin routes
+	admin := api.Group("/admin")
+	admin.Use(middleware.AdminMiddleware)
+	admin.Get("/users", handlers.GetUsers)
+	admin.Post("/addadmin", handlers.AddAdmin)
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 
 }

@@ -5,15 +5,15 @@ import (
 	"fmt"
 
 	"github.com/axrav/Systopher/backend/helpers"
-	"github.com/axrav/Systopher/backend/types"
+	"github.com/axrav/Systopher/backend/models"
 	"github.com/gofiber/websocket/v2"
 )
 
 func ServerWS(c *websocket.Conn) {
 	ctx, cancel := context.WithCancel(context.Background())
-	servers := c.Locals("servers").([]types.Server)
-	serverChannel := make(chan []types.Server, 1)
-	dataChannel := make(chan types.ServerData)
+	servers := c.Locals("servers").([]models.Server)
+	serverChannel := make(chan []models.Server, 1)
+	dataChannel := make(chan []models.ServerData)
 	serverChannel <- servers
 	go helpers.ServerStats(serverChannel, dataChannel, c, ctx)
 	for {
