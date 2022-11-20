@@ -21,9 +21,14 @@ export default function signup() {
   }, [signUpStatus]);
 
   return (
-    <div className="bg-gray-900 h-screen w-screen bg-no-repeat bg-cover scrollbar-hide flex justify-between">
-      <Error error={error} setShowError={setShowError} showError={showError} />
-      <div className="md:w-1/2 w-full h-full flex items-center justify-center">
+    <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between">
+      <Error
+        heading="Sign Up Error!"
+        error={error}
+        setShowError={setShowError}
+        showError={showError}
+      />
+      <div className="md:w-1/2 bg-gray-900 w-full h-full flex items-center justify-center">
         <SignUpForm
           setShowError={setShowError}
           showError={showError}
@@ -31,7 +36,7 @@ export default function signup() {
           setError={setError}
         />
       </div>
-      <div className="w-1/2 md:flex hidden h-full items-center justify-center">
+      <div className="w-1/2 bg-gray-900 md:flex hidden h-full items-center justify-center">
         <img src="login.svg" alt="" />
       </div>
     </div>

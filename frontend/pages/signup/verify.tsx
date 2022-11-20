@@ -69,7 +69,12 @@ function verify() {
       style={{ backgroundImage: `url("../bg.svg")` }}
       className="bg-gray-900 bg-cover bg-no-repeat h-screen w-screen scrollbar-hide flex justify-between"
     >
-      <Error error={error} setShowError={setShowError} showError={showError} />
+      <Error
+        heading="Verification Error!"
+        error={error}
+        setShowError={setShowError}
+        showError={showError}
+      />
       <Success
         message={
           successLoading
@@ -83,7 +88,7 @@ function verify() {
         showSuccess={showSuccess}
         loading={successLoading}
       />
-      <div className="flex flex-col justify-center items-center w-full p-10 h-full space-y-8 lg:space-y-10 xl:space-y-14 2xl:space-y-16">
+      <div className="flex flex-col justify-center items-center w-full h-full space-y-8 lg:space-y-10 xl:space-y-14 2xl:space-y-16">
         <div className="xl:text-6xl 2xl:text-7xl md:text-5xl sm:text-3xl text-2xl  text-white font-bold">
           Verify your email
         </div>

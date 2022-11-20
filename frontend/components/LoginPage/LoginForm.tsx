@@ -34,6 +34,11 @@ function LoginForm({
 
   const handleSubmit = async () => {
     setLoading(true);
+    setEmailError(false);
+    setPasswordError(false);
+    setShowError(false);
+    setError("");
+
     dispatch(
       signIn(
         email,

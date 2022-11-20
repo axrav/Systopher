@@ -6,6 +6,7 @@ import { Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrorMessage, signUp } from "../../redux/actions/UserAuth";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import Error from "../Utils/Error";
 
 function SignUpForm({
   error,
@@ -29,6 +30,7 @@ function SignUpForm({
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const [rePasswordError, setRePasswordError] = React.useState(false);
+  const [userNameSuccess, setUserNameSuccess] = React.useState("");
 
   const dispatch = useAppDispatch();
 
@@ -41,6 +43,13 @@ function SignUpForm({
   const handleSubmit = async () => {
     if (passwordVerify && userName && email && password && rePassword) {
       setLoading(true);
+      setEmailError(false);
+      setPasswordError(false);
+      setRePasswordError(false);
+      setUserNameError(false);
+      setShowError(false);
+      setError("");
+
       dispatch(
         signUp(
           email,
@@ -92,8 +101,43 @@ function SignUpForm({
     }
   }, [error]);
 
+  useEffect(() => {
+    const userCheck = setTimeout(() => {
+      if (userName.length > 0) {
+        api
+          .get("/auth/check?username=" + userName)
+          .then((res) => {
+            if (res.data.error) {
+            } else {
+              setUserNameError(false);
+              setError("");
+              setShowError(false);
+              setUserNameSuccess("yes");
+            }
+          })
+          .catch((err: any) => {
+            const msg = Error(err.response.data.code)?.msg;
+            const type = Error(err.response.data.code)?.type;
+            setError(msg || "Something went wrong");
+            setShowError(true);
+            if (type?.includes("userName")) {
+              setUserNameError(true);
+              setUserNameSuccess("no");
+            }
+          });
+      } else {
+        setUserNameSuccess("");
+        setError("");
+        setShowError(false);
+        setUserNameError(false);
+        setUserNameSuccess("no");
+      }
+    }, 1000);
+    return () => clearTimeout(userCheck);
+  }, [userName]);
+
   return (
-    <div className="w-10/12 h-fit flex flex-col space-y-12">
+    <div className="md:w-10/12 w-full px-6 bg-gray-900 h-fit flex flex-col space-y-12">
       <div className="flex flex-col space-y-3">
         <h1 className="text-white font-semibold md:text-5xl text-2xl">
           Welcome to Systopher
@@ -116,12 +160,13 @@ function SignUpForm({
           error={emailError}
         />
         <SignUpInput
-          inputType={"text"}
+          inputType={"username"}
           inputPlaceholder={"myuser"}
           inputLabel={"Username"}
           value={userName}
           setValue={setUserName}
           error={userNameError}
+          success={userNameSuccess}
         />
         <SignUpInput
           inputType={"password"}

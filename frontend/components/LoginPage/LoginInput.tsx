@@ -33,9 +33,9 @@ function LoginInput({
         onChange={(e) => setValue(e.target.value)}
         className={`w-full ${
           error
-            ? "text-red-600 placeholder:text-red-900 border-b-red-600"
-            : "text-white placeholder:text-gray-700 border-b-gray-600"
-        } bg-gray-900 px-1 h-12 outline-none focus:border-b-gray-300 duration-150 border-b font-light md:text-2xl text-lg mb-4`}
+            ? "text-red-600 placeholder:text-red-900 border-b-red-600 focus:border-b-red-300"
+            : "text-white placeholder:text-gray-700 border-b-gray-600 focus:border-b-gray-300"
+        } bg-gray-900 px-1 h-12 outline-none duration-150 border-b font-light md:text-2xl text-lg mb-4`}
       />
     </div>
   );

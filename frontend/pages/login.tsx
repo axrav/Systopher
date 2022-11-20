@@ -18,7 +18,12 @@ export default function login() {
 
   return (
     <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between">
-      <Error error={error} setShowError={setShowError} showError={showError} />
+      <Error
+        heading="Login Error!"
+        error={error}
+        setShowError={setShowError}
+        showError={showError}
+      />
       <div className="md:w-1/2 w-full h-full scrollbar-hide flex items-center justify-center">
         <LoginForm
           setShowError={setShowError}

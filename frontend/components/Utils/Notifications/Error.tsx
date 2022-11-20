@@ -6,13 +6,18 @@ function Error({
   error,
   showError,
   setShowError,
+  heading,
 }: {
   error: string;
   showError: boolean;
   setShowError: React.Dispatch<React.SetStateAction<boolean>>;
+  heading: string;
 }) {
   return (
-    <div className="absolute bottom-5 right-5">
+    <div
+      hidden={!showError}
+      className="absolute bottom-5 z-50 md:right-5 md:bottom-5 md:top-auto md:left-auto top-2 right-2 left-2 h-fit"
+    >
       <Notification
         icon={
           <IconAlertCircle
@@ -21,7 +26,7 @@ function Error({
           />
         }
         onClose={() => setShowError(false)}
-        title={<h3 className="text-lg font-bold">Login Error!</h3>}
+        title={<h3 className="md:text-lg text-base font-bold">{heading}</h3>}
         radius="md"
         color="red"
         className="bg-red-700"
@@ -30,7 +35,7 @@ function Error({
         }}
         hidden={!showError}
       >
-        <p className="text-base max-w-xl text-white">{error}</p>
+        <p className="md:text-base text-sm max-w-xl text-white">{error}</p>
       </Notification>
     </div>
   );
