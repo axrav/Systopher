@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import Router from "next/router";
 import { Alert, Button } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons";
+import { IconAlertCircle, IconH1 } from "@tabler/icons";
 import OTP from "../../components/OTP";
 import { useAppDispatch } from "../../components/hooks/useAppDispatch";
-import { verifyUser } from "../../redux/actions/UserAuth";
+import { verifyUser, resendOTP } from "../../redux/actions/UserAuth";
 import { useSelector } from "react-redux";
+import { Notification } from "@mantine/core";
+import { IconX, IconCheck } from "@tabler/icons";
+import Error from "../../components/Utils/Notifications/Error";
+import Success from "../../components/Utils/Notifications/Success";
 
 function verify() {
   const [email, setEmail] = React.useState("");
@@ -13,6 +17,8 @@ function verify() {
   const [error, setError] = React.useState("");
   const [otp, setOTP] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
+  const [successLoading, setSuccessLoading] = React.useState(false);
 
   const authToken = useSelector((state: any) => state.auth.user?.token);
 
@@ -44,21 +50,40 @@ function verify() {
     dispatch(verifyUser(email, otp, setLoading, setError, setShowError));
   };
 
+  const handleResend = () => {
+    setSuccessLoading(true);
+    setShowSuccess(true);
+    dispatch(
+      resendOTP(
+        email,
+        setShowSuccess,
+        setError,
+        setShowError,
+        setSuccessLoading
+      )
+    );
+  };
+
   return (
-    <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between overflow-y-scroll">
-      <div className="absolute bottom-5 right-5">
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          onClose={() => setShowError(false)}
-          title="Login Error!"
-          color="red"
-          withCloseButton
-          hidden={!showError}
-        >
-          {error}
-        </Alert>
-      </div>
-      <div className="flex flex-col justify-center items-center w-full h-full space-y-8 lg:space-y-10 xl:space-y-14 2xl:space-y-16">
+    <div
+      style={{ backgroundImage: `url("../bg.svg")` }}
+      className="bg-gray-900 bg-cover bg-no-repeat h-screen w-screen scrollbar-hide flex justify-between"
+    >
+      <Error error={error} setShowError={setShowError} showError={showError} />
+      <Success
+        message={
+          successLoading
+            ? "Sending OTP..."
+            : "Mail containing OTP has been sent to your email address."
+        }
+        heading={
+          successLoading ? "Processing Request..." : "OTP Sent Successfully!"
+        }
+        setShowSuccess={setShowSuccess}
+        showSuccess={showSuccess}
+        loading={successLoading}
+      />
+      <div className="flex flex-col justify-center items-center w-full p-10 h-full space-y-8 lg:space-y-10 xl:space-y-14 2xl:space-y-16">
         <div className="xl:text-6xl 2xl:text-7xl md:text-5xl sm:text-3xl text-2xl  text-white font-bold">
           Verify your email
         </div>
@@ -70,6 +95,17 @@ function verify() {
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-10">
           <OTP setOTP={setOTP} />
+          <div className="flex space-x-4 items-center justify-center">
+            <p>
+              Didn't receive an OTP?{" "}
+              <span
+                onClick={handleResend}
+                className="text-green-500 cursor-pointer hover:underline hover:underline-offset-4"
+              >
+                Resend OTP
+              </span>
+            </p>
+          </div>
           <Button
             variant="filled"
             type="submit"

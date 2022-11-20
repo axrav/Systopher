@@ -10,10 +10,12 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 function SignUpForm({
   error,
   setError,
+  showError,
   setShowError,
 }: {
   error: string;
   setError: React.Dispatch<React.SetStateAction<string>>;
+  showError: boolean;
   setShowError: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [email, setEmail] = React.useState("");
@@ -22,6 +24,11 @@ function SignUpForm({
   const [passwordVerify, setPasswordVerify] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [userName, setUserName] = React.useState("");
+
+  const [userNameError, setUserNameError] = React.useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [rePasswordError, setRePasswordError] = React.useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -32,13 +39,24 @@ function SignUpForm({
   console.log(userError);
 
   const handleSubmit = async () => {
-    if (passwordVerify) {
+    if (passwordVerify && userName && email && password && rePassword) {
       setLoading(true);
       dispatch(
-        signUp(email, userName, password, setLoading, setError, setShowError)
+        signUp(
+          email,
+          userName,
+          password,
+          setLoading,
+          setError,
+          setShowError,
+          setEmailError,
+          setPasswordError,
+          setUserNameError,
+          setRePasswordError
+        )
       );
     } else {
-      setError("The passwords entered do not match");
+      setError("Please fill out all the fields");
       setShowError(true);
     }
   };
@@ -48,17 +66,34 @@ function SignUpForm({
   }
 
   useEffect(() => {
-    if (password !== "" && rePassword !== "") {
-      if (password === rePassword) {
-        setPasswordVerify(true);
-      } else {
-        setPasswordVerify(false);
-      }
+    if (!showError) {
+      setError("");
+      setEmailError(false);
+      setPasswordError(false);
+      setRePasswordError(false);
+      setUserNameError(false);
+    }
+  }, [showError]);
+
+  useEffect(() => {
+    if (password === rePassword) {
+      setPasswordVerify(true);
+      setPasswordError(false);
+      setRePasswordError(false);
+    } else {
+      setPasswordVerify(false);
     }
   }, [rePassword, password]);
 
+  useEffect(() => {
+    if (error !== "" && !passwordVerify) {
+      setPasswordError(true);
+      setRePasswordError(true);
+    }
+  }, [error]);
+
   return (
-    <div className="w-10/12 bg-gray-900 h-fit flex flex-col space-y-12">
+    <div className="w-10/12 h-fit flex flex-col space-y-12">
       <div className="flex flex-col space-y-3">
         <h1 className="text-white font-semibold md:text-5xl text-2xl">
           Welcome to Systopher
@@ -78,7 +113,7 @@ function SignUpForm({
           inputLabel={"Email"}
           value={email}
           setValue={setEmail}
-          error={error}
+          error={emailError}
         />
         <SignUpInput
           inputType={"text"}
@@ -86,7 +121,7 @@ function SignUpForm({
           inputLabel={"Username"}
           value={userName}
           setValue={setUserName}
-          error={error}
+          error={userNameError}
         />
         <SignUpInput
           inputType={"password"}
@@ -94,7 +129,7 @@ function SignUpForm({
           inputLabel={"Password"}
           value={password}
           setValue={setPassword}
-          error={error}
+          error={passwordError}
         />
         <SignUpInput
           inputType={"password"}
@@ -102,7 +137,7 @@ function SignUpForm({
           inputLabel={"Re Enter Password"}
           value={rePassword}
           setValue={setRePassword}
-          error={error}
+          error={rePasswordError}
         />
         <Button
           className="w-full px-4 py-4 bg-gray-800 hover:bg-gray-700 duration-150 rounded-lg text-xl font-semibold text-yellow-500"
@@ -120,7 +155,7 @@ function SignUpForm({
           <button
             className="text-yellow-500"
             onClick={() => {
-              Router.push("/signup");
+              Router.push("/login");
             }}
           >
             Login

@@ -13,7 +13,9 @@ export const signIn = (
   password: string,
   setLoading: any,
   setError: any,
-  setShowError: any
+  setShowError: any,
+  setEmailError: any,
+  setPasswordError: any
 ) => {
   return async (dispatch: any) => {
     try {
@@ -25,7 +27,15 @@ export const signIn = (
         payload: { error: err.response, user: null },
       });
       setLoading(false);
-      setError(errorCodeToMessage(err.response.data.code));
+      const msg = errorCodeToMessage(err.response.data.code)?.msg;
+      const type = errorCodeToMessage(err.response.data.code)?.type;
+      if (type?.includes("email")) {
+        setEmailError(true);
+      }
+      if (type?.includes("password")) {
+        setPasswordError(true);
+      }
+      setError(msg);
       setShowError(true);
     }
   };
@@ -37,7 +47,11 @@ export const signUp = (
   password: string,
   setLoading: any,
   setError: any,
-  setShowError: any
+  setShowError: any,
+  setEmailError: any,
+  setPasswordError: any,
+  setUserNameError: any,
+  setRePasswordError: any
 ) => {
   return async (dispatch: any) => {
     try {
@@ -54,7 +68,19 @@ export const signUp = (
         payload: { error: err.response, user: null },
       });
       setLoading(false);
-      setError(errorCodeToMessage(err.response.data.code));
+      const msg = errorCodeToMessage(err.response.data.code)?.msg;
+      const type = errorCodeToMessage(err.response.data.code)?.type;
+      if (type?.includes("email")) {
+        setEmailError(true);
+      }
+      if (type?.includes("password")) {
+        setPasswordError(true);
+        setRePasswordError(true);
+      }
+      if (type?.includes("userName")) {
+        setUserNameError(true);
+      }
+      setError(msg);
       setShowError(true);
     }
   };
@@ -76,8 +102,35 @@ export const verifyUser = (
         type: AUTH_ERROR,
         payload: { error: err.response, user: null },
       });
+      const msg = errorCodeToMessage(err.response.data.code)?.msg;
+      const type = errorCodeToMessage(err.response.data.code)?.type;
+
       setLoading(false);
-      setError(errorCodeToMessage(err.response.data.code));
+      setError(msg);
+      setShowError(true);
+    }
+  };
+};
+
+export const resendOTP = (
+  email: string,
+  setShowSuccess: any,
+  setError: any,
+  setShowError: any,
+  setSuccessLoading: any
+) => {
+  return async (dispatch: any) => {
+    try {
+      const res = await api.post("/auth/resendotp", { email });
+      setSuccessLoading(false);
+    } catch (err: any) {
+      dispatch({
+        type: AUTH_ERROR,
+        payload: { error: err.response, user: null },
+      });
+      const msg = errorCodeToMessage(err.response.data.code)?.msg;
+      setShowSuccess(false);
+      setError(msg);
       setShowError(true);
     }
   };

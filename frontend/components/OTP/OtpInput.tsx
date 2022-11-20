@@ -32,7 +32,7 @@ function OtpInput({
           }
         }
       }}
-      className="xl:w-16 xl:h-16 md:w-12 md:h-12 h-12 w-12 md:text-xl xl:text-2xl 2xl:text-3xl bg-gray-700 text-center font-bold text-white outline-none p-3"
+      className="xl:w-16 xl:h-16 md:w-12 md:h-12 h-12 w-12 md:text-xl xl:text-2xl 2xl:text-3xl bg-gray-400 bg-opacity-60 text-center rounded-md font-bold text-white outline-none p-3"
     />
   );
 }

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { IconAlertCircle } from "@tabler/icons";
 import Router from "next/router";
 import SignUpForm from "../../components/SignUpPage/SignUpForm";
+import Error from "../../components/Utils/Notifications/Error";
 
 export default function signup() {
   const [error, setError] = React.useState("");
@@ -20,22 +21,12 @@ export default function signup() {
   }, [signUpStatus]);
 
   return (
-    <div className="bg-gray-900 h-screen w-screen scrollbar-hide flex justify-between overflow-y-scroll">
-      <div className="absolute bottom-5 right-5">
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          onClose={() => setShowError(false)}
-          title="Login Error!"
-          color="red"
-          withCloseButton
-          hidden={!showError}
-        >
-          {error}
-        </Alert>
-      </div>
+    <div className="bg-gray-900 h-screen w-screen bg-no-repeat bg-cover scrollbar-hide flex justify-between">
+      <Error error={error} setShowError={setShowError} showError={showError} />
       <div className="md:w-1/2 w-full h-full flex items-center justify-center">
         <SignUpForm
           setShowError={setShowError}
+          showError={showError}
           error={error}
           setError={setError}
         />

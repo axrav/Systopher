@@ -1,38 +1,62 @@
 export default (errorCode: string) => {
   switch (errorCode) {
     case "ERR-699":
-      return "The credentials you provided are incorrect. Please try again.";
+      return {
+        msg: "The credentials you provided are incorrect. Please try again.",
+        type: ["email", "password"],
+      };
     case "ERR-698":
-      return "Invalid Data";
+      return {
+        msg: "Invalid Data",
+        type: ["email", "password"],
+      };
     case "ERR-697":
-      return "Unauthorized Access";
+      return { msg: "Unauthorized Access", type: [] };
     case "ERR-696":
-      return "The entered user does not exist.";
+      return {
+        msg: "The entered user is not registered on Systopher.",
+        type: ["email"],
+      };
     case "ERR-695":
-      return "The entered username is already taken.";
+      return {
+        msg: "The entered username is already taken.",
+        type: ["userName"],
+      };
     case "ERR-694":
-      return "The entered email is badly formatted.";
+      return { msg: "The entered email is badly formatted.", type: ["email"] };
     case "ERR-693":
-      return "The entered email is already in use by another account.";
+      return {
+        msg: "The entered email is already in use by another account.",
+        type: ["email"],
+      };
     case "ERR-692":
-      return "The entered email is badly formatted.";
+      return { msg: "The entered email is badly formatted.", type: ["email"] };
     case "ERR-691":
-      return "The entered username is invalid.";
+      return { msg: "The entered username is invalid.", type: ["userName"] };
     case "ERR-690":
-      return "Invalid Server Response";
+      return { msg: "Invalid Server Response", type: [] };
     case "ERR-689":
-      return "Internal Server Error Occurred";
+      return { msg: "Internal Server Error Occurred", type: ["none"] };
     case "ERR-688":
-      return "The entered OTP is invalid.";
+      return { msg: "The entered OTP is Incorrect.", type: ["otp"] };
     case "ERR-687":
-      return "Details not found.";
+      return { msg: "Details not found.", type: ["all"] };
     case "ERR-686":
-      return "The Password must be at least 8 characters long with one uppercase letter, one lowercase letter, one number and one special character.";
+      return {
+        msg: "The Password must be at least 8 characters long with one uppercase letter, one lowercase letter, one number and one special character.",
+        type: ["password"],
+      };
     case "ERR-685":
-      return "The user is already verified. Please login.";
+      return {
+        msg: "The user is already verified. Please login.",
+        type: ["otp"],
+      };
     case "ERR-684":
-      return "Already exists.";
+      return { msg: "Already exists.", type: ["all"] };
     case "ERR-683":
-      return "No response from the server. Please try again.";
+      return {
+        msg: "No response from the server. Please try again.",
+        type: ["none"],
+      };
   }
 };

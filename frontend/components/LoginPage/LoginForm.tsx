@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LoginInput from "./LoginInput";
 import Router from "next/router";
 import api from "../../api";
@@ -10,15 +10,19 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 function LoginForm({
   error,
   setError,
+  showError,
   setShowError,
 }: {
   error: string;
   setError: React.Dispatch<React.SetStateAction<string>>;
+  showError: boolean;
   setShowError: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -30,12 +34,30 @@ function LoginForm({
 
   const handleSubmit = async () => {
     setLoading(true);
-    dispatch(signIn(email, password, setLoading, setError, setShowError));
+    dispatch(
+      signIn(
+        email,
+        password,
+        setLoading,
+        setError,
+        setShowError,
+        setEmailError,
+        setPasswordError
+      )
+    );
   };
 
   if (user) {
     Router.push("/dashboard");
   }
+
+  useEffect(() => {
+    if (!showError) {
+      setError("");
+      setEmailError(false);
+      setPasswordError(false);
+    }
+  }, [showError]);
 
   return (
     <div className="w-10/12 bg-gray-900 h-fit flex flex-col space-y-12">
@@ -58,7 +80,7 @@ function LoginForm({
           inputLabel={"Email"}
           value={email}
           setValue={setEmail}
-          error={error}
+          error={emailError}
         />
         <LoginInput
           inputType={"password"}
@@ -66,7 +88,7 @@ function LoginForm({
           inputLabel={"Password"}
           value={password}
           setValue={setPassword}
-          error={error}
+          error={passwordError}
         />
         <Button
           className="w-full px-4 py-4 bg-gray-800 hover:bg-gray-700 duration-150 rounded-lg text-xl font-semibold text-yellow-500"
