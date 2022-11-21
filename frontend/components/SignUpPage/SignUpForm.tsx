@@ -139,8 +139,8 @@ function SignUpForm({
   }, [userName]);
 
   return (
-    <div className="md:w-10/12 w-full px`-6 bg-gray-900 h-fit flex flex-col space-y-12">
-      <div className="flex flex-col space-y-3">
+    <div className="md:w-10/12 w-full scrollbar- px-6 pb-10 bg-gray-900 h-fit flex flex-col space-y-12">
+      <div className="flex flex-col md:pt-40 pt-20 space-y-3">
         <h1 className="text-white font-semibold md:text-5xl text-2xl">
           Welcome to Systopher
         </h1>
@@ -150,7 +150,7 @@ function SignUpForm({
       </div>
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="flex flex-col space-y-8"
+        className="flex flex-col 2xl:space-y-10 xl:space-y-6 space-y-4"
         action=""
       >
         <SignUpInput
