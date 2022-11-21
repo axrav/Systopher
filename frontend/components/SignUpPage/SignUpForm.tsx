@@ -25,6 +25,8 @@ function SignUpForm({
   const [passwordVerify, setPasswordVerify] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [userName, setUserName] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showRePassword, setShowRePassword] = React.useState(false);
 
   const [userNameError, setUserNameError] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
@@ -175,6 +177,8 @@ function SignUpForm({
           value={password}
           setValue={setPassword}
           error={passwordError}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
         />
         <SignUpInput
           inputType={"password"}
@@ -183,6 +187,8 @@ function SignUpForm({
           value={rePassword}
           setValue={setRePassword}
           error={rePasswordError}
+          showPassword={showRePassword}
+          setShowPassword={setShowRePassword}
         />
         <Button
           className="w-full px-4 py-4 bg-gray-800 hover:bg-gray-700 duration-150 rounded-lg text-xl font-semibold text-yellow-500"

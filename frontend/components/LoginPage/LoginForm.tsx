@@ -23,6 +23,7 @@ function LoginForm({
   const [loading, setLoading] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -94,7 +95,17 @@ function LoginForm({
           value={password}
           setValue={setPassword}
           error={passwordError}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
         />
+        <p
+          onClick={() => {
+            Router.push("/forgot");
+          }}
+          className="text-gray-400 font-light font-sm hover:underline hover:underline-offset-4 cursor-pointer w-fit"
+        >
+          Forgot Password?
+        </p>
         <Button
           className="w-full px-4 py-4 bg-gray-800 hover:bg-gray-700 duration-150 rounded-lg text-xl font-semibold text-yellow-500"
           type="submit"
