@@ -137,7 +137,7 @@ function SignUpForm({
   }, [userName]);
 
   return (
-    <div className="md:w-10/12 w-full px-6 bg-gray-900 h-fit flex flex-col space-y-12">
+    <div className="md:w-10/12 w-full px`-6 bg-gray-900 h-fit flex flex-col space-y-12">
       <div className="flex flex-col space-y-3">
         <h1 className="text-white font-semibold md:text-5xl text-2xl">
           Welcome to Systopher
