@@ -66,7 +66,6 @@ func ServerStats(serverChannel chan []models.Server, dataChannel chan []models.S
 			}
 			dataChannel <- stats
 			stats = nil
-
 		}
 		time.Sleep(15 * time.Second)
 	}

@@ -57,6 +57,7 @@ func SetupRoutes(app *fiber.App) {
 	admin.Use(middleware.AdminMiddleware)
 	admin.Get("/users", handlers.GetUsers)
 	admin.Post("/addadmin", handlers.AddAdmin)
+	admin.Post("/removeadmin", handlers.RemoveAdmin)
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 
 }
