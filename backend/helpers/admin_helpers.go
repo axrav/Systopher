@@ -49,3 +49,13 @@ func AddAdmin(email string) error {
 	}
 	return nil
 }
+
+func DeleteAdmin(email string) error {
+	_, err := db.Pgres.Exec(`DELETE FROM admins WHERE email=$1`, email)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+

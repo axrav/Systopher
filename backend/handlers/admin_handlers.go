@@ -36,3 +36,19 @@ func AddAdmin(c *fiber.Ctx) error {
 		"message": "Admin added",
 	})
 }
+
+func RemoveAdmin(c *fiber.Ctx) error {
+	email := new(models.Email)
+	if err := c.BodyParser(email); err != nil {
+		fmt.Println("error", err)
+		return c.Status(500).JSON(errors.InternalServerError)
+	}
+	err := helpers.DeleteAdmin(email.Email)
+	if err != nil {
+		fmt.Println("error", err)
+		return c.Status(500).JSON(errors.InternalServerError)
+	}
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Admin removed",
+	})
+}

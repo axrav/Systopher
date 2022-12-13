@@ -3,6 +3,7 @@ module github.com/axrav/Systopher/backend
 go 1.19
 
 require (
+	github.com/AfterShip/email-verifier v1.3.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.39.0
 	github.com/gofiber/jwt/v3 v3.3.2
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/AfterShip/email-verifier v1.3.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
