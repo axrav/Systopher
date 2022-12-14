@@ -40,21 +40,13 @@ func CheckUserNameExists(username string) errors.Error {
 	if len(strings.Split(username, " ")) > 1 {
 		return errors.InvalidUsername.Merror()
 	}
-	rows, err := db.Pgres.Query(`SELECT "username" FROM users where username=$1`, username)
+	var user db.User
+	err := db.Pgres.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		fmt.Println(err)
-		return errors.InternalServerError.Merror()
-	}
-	var Username string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&Username)
-	}
-	if Username == username {
-		return errors.UsernameTaken.Merror()
-	} else {
 		return errors.Error{}
 	}
+	return errors.UsernameTaken.Merror()
 
 }
 

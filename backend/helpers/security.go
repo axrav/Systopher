@@ -20,15 +20,12 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func CompareHashAndPassword(password string, email string) (bool, error) {
-	rows, err := db.Pgres.Query(`SELECT "password" FROM USERS where email=$1`, email)
+	var hashofPassword string
+	err := db.Pgres.Model(&db.User{}).Where("email = ?", email).Pluck("password", &hashofPassword).Error
 	if err != nil {
 		return false, err
 	}
-	var hashofPassword string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&hashofPassword)
-	}
+
 	check := CheckPasswordHash(password, hashofPassword)
 	return check, nil
 

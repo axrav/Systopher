@@ -25,11 +25,11 @@ func Signup(c *fiber.Ctx) error {
 		} else {
 			u_id := helpers.GenerateId("USER-")
 			if err = helpers.CreateUser(user.Email, hash, user.Username, u_id); err != nil {
-				if strings.HasSuffix(err.Error(), "\"users_email_key\"") {
+				if strings.HasSuffix(err.Error(), "\"users_email_key\" (SQLSTATE 23505)") {
 					return c.Status(409).JSON(errors.EmailTaken.Merror())
 
 				}
-				if strings.HasSuffix(err.Error(), "\"users_username_key\"") {
+				if strings.HasSuffix(err.Error(), "\"users_username_key\" (SQLSTATE 23505)") {
 					return c.Status(409).JSON(errors.UsernameTaken.Merror())
 				}
 				return c.Status(fiber.StatusInternalServerError).JSON(errors.InternalServerError.Merror())

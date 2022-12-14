@@ -7,7 +7,6 @@ import (
 
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
-	"github.com/axrav/Systopher/backend/models"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyz" +
@@ -32,66 +31,47 @@ func GenerateId(typeof string) string {
 	return typeof + string(b)
 }
 
-func CheckServerAndDelete(server *models.Server) error {
-
-	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1`, server.Ip)
+func CheckServerAndDelete(server *db.Server) error {
+	var Ipaddr string
+	err := db.Pgres.Find(&db.Server{Ip: server.Ip, Owner: server.Owner}).Scan(&Ipaddr).Error
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	var Ipaddr string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&Ipaddr)
-	}
-	if Ipaddr == server.Ip {
-		// delete server from database
-		_, err = db.Pgres.Exec(`DELETE FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
+	// delete server from database
+	err = db.Pgres.Delete(&db.Server{Ip: server.Ip, Owner: server.Owner}).Error
+	if err != nil {
+		fmt.Println(err)
+		return err
 
 	}
 	return nil
 }
 
-func GetServers(email string) []models.Server {
-	rows, err := db.Pgres.Query(`SELECT ip,port,token,name,owner FROM servers where owner=$1`, email)
+func GetServers(email string) []db.Server {
+	var servers []db.Server
+	err := db.Pgres.Find(&db.Server{Owner: db.User{Email: email}}).Scan(&servers).Error
 	if err != nil {
 		fmt.Println(err)
-	}
-	defer rows.Close()
-	var servers []models.Server
-	for rows.Next() {
-		var server models.Server
-		err = rows.Scan(&server.Ip, &server.Port, &server.Token, &server.Name, &server.Owner)
-		if err != nil {
-			fmt.Println(err)
-		}
-		servers = append(servers, server)
 	}
 	return servers
 }
 
-func CheckServerAndAdd(server *models.Server) error {
-	rows, err := db.Pgres.Query(`SELECT "ip" FROM servers where ip=$1 and owner=$2`, server.Ip, server.Owner)
+func CheckServerAndAdd(server *db.Server) error {
+	var Ipaddr string
+	err := db.Pgres.Find(&db.Server{Ip: server.Ip}).Error
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	var Ipaddr string
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&Ipaddr)
-	}
+
 	if Ipaddr == server.Ip {
 		return errors.AlreadyExists.Error()
 	} else {
 		test, err := TestRequest(server.Ip, server.Port, server.Token) // perform a test request
 		if test {
 			// insert server to database
-			_, err = db.Pgres.Exec(`INSERT INTO servers (name, ip, port, owner, token) VALUES ($1, $2, $3, $4, $5)`, server.Name, server.Ip, server.Port, server.Owner, server.Token)
+			err = db.Pgres.Create(&db.Server{Ip: server.Ip, Port: server.Port, Token: server.Token, Owner: server.Owner}).Error
 			if err != nil {
 				fmt.Println(err)
 				return err
