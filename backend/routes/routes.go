@@ -39,8 +39,8 @@ func SetupRoutes(app *fiber.App) {
 
 	// server routes
 	server := api.Group("/server")
-	server.Post("/addserver", handlers.AddServer)
-	server.Get("/generateToken", handlers.GenerateToken)
+	server.Post("/addserver",middleware.UserCacheMiddleware, handlers.AddServer)
+	server.Get("/generateToken",middleware.UserCacheMiddleware, handlers.GenerateToken)
 
 	server.Delete("/deleteserver", middleware.ServerMiddleware, handlers.DeleteServer)
 

@@ -82,9 +82,10 @@ func VerifyOtp(email, otp string) bool {
 func GetVerified(email string) bool {
 	var verified bool
 
-	err := db.Pgres.Model(&db.User{}).Where("email = ?", email).Pluck("is_verified", &verified)
+	err := db.Pgres.Model(&db.User{}).Where("email = ?", email).Pluck("is_verified", &verified).Error
 	if err != nil {
 		fmt.Println(err)
+		fmt.Println("something")
 		return false
 	}
 	return verified
