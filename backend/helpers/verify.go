@@ -80,20 +80,18 @@ func VerifyOtp(email, otp string) bool {
 }
 
 func GetVerified(email string) bool {
-	rows, err := db.Pgres.Query(`SELECT isverified FROM users where email=$1`, email)
+	var verified bool
+
+	err := db.Pgres.Model(&db.User{}).Where("email = ?", email).Pluck("is_verified", &verified)
 	if err != nil {
 		fmt.Println(err)
-	}
-	defer rows.Close()
-	var verified bool
-	for rows.Next() {
-		rows.Scan(&verified)
+		return false
 	}
 	return verified
 }
 
 func SetVerify(email string) error {
-	_, err := db.Pgres.Exec("UPDATE users SET isverified=$1 WHERE email=$2", true, email)
+	err := db.Pgres.Model(&db.User{}).Where("email = ?", email).Update("is_verified", true).Error
 	if err != nil {
 		fmt.Println(err)
 		return err

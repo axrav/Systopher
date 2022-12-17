@@ -1,12 +1,7 @@
 package models
 
-type Server struct {
-	Ip    string `json:"ip_address"`
-	Port  string `json:"port"`
-	Name  string `json:"name" `
-	Owner string `json:"owner" `
-	Token string `json:"token" `
-}
+import "github.com/axrav/Systopher/backend/db"
+
 type ServerData struct {
 	Ip             string    `json:"ip_address"`
 	TotalMemory    string    `json:"total_memory"`
@@ -59,11 +54,11 @@ type LoginUser struct {
 }
 
 type UserData struct {
-	Email     string   `json:"email"`
-	Username  string   `json:"username"`
-	UniqueID  string   `json:"unique_id"`
-	Servers   []Server `json:"servers"`
-	RandomKey string   `json:"random_key"`
+	Email     string      `json:"email"`
+	Username  string      `json:"username"`
+	UniqueID  string      `json:"unique_id"`
+	Servers   []db.Server `json:"servers"`
+	RandomKey string      `json:"random_key"`
 }
 
 type Email struct {

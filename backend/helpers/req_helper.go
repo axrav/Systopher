@@ -16,7 +16,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-func ServerStats(serverChannel chan []models.Server, dataChannel chan []models.ServerData, c *websocket.Conn, ctx context.Context) {
+func ServerStats(serverChannel chan []db.Server, dataChannel chan []models.ServerData, c *websocket.Conn, ctx context.Context) {
 	var client http.Client
 	servers := <-serverChannel
 	for {

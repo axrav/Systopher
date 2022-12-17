@@ -19,6 +19,16 @@ func ServerMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
+func UserCacheMiddleware(c *fiber.Ctx) error {
+	email := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)["email"].(string)
+	user := helpers.GetUserData(email)
+	if user == nil {
+		return c.Status(400).JSON(errors.NotFound.Merror())
+	}
+	c.Locals("userdata", user)
+	return c.Next()
+}
+
 func WebSocketMiddleware(c *fiber.Ctx) error {
 	email := helpers.GetEmailFromId(c.Query("token"))
 	if email == "" {

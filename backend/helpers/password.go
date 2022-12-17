@@ -28,8 +28,7 @@ func UpdatePassword(password string, email string) error {
 	if err != nil {
 		return err
 	}
-
-	_, err = db.Pgres.Exec("UPDATE users SET password = $1 WHERE email = $2", hash, email)
+	err = db.Pgres.Model(&db.User{}).Where("email = ?", email).Update("password", hash).Error
 	if err != nil {
 		return err
 	}
