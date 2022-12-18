@@ -1,7 +1,11 @@
 import React from "react";
 
-function ForgotPassForm() {
-  return <div>ForgotPassForm</div>;
+function index() {
+  return (
+    <div>
+      <h1>Forgot Password</h1>
+    </div>
+  );
 }
 
-export default ForgotPassForm;
+export default index;

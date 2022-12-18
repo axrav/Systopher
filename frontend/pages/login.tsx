@@ -1,8 +1,5 @@
 import React, { useEffect } from "react";
-import Header from "../components/Header";
 import LoginForm from "../components/LoginPage/LoginForm";
-import { Alert } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons";
 import Router from "next/router";
 import Error from "../components/Utils/Notifications/Error";
 
@@ -25,6 +22,7 @@ export default function login() {
         showError={showError}
       />
       <div className="md:w-1/2 w-full h-full scrollbar-hide flex items-center justify-center">
+        {" "}
         <LoginForm
           setShowError={setShowError}
           showError={showError}
