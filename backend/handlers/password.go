@@ -95,7 +95,7 @@ func GenerateNewPassword(c *fiber.Ctx) error {
 			"message": "Password changed",
 		})
 	} else {
-		return c.Status(498).JSON(errors.InvalidOtp)
+		return c.Status(400).JSON(errors.InvalidOtp.Merror())
 
 	}
 }
