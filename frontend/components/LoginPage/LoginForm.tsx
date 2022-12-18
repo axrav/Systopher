@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import LoginInput from "./LoginInput";
 import Router from "next/router";
-import api from "../../api";
 import { Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrorMessage, signIn } from "../../redux/actions/UserAuth";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import RememberMe from "./RememberMe";
 
 function LoginForm({
   error,
@@ -24,6 +24,7 @@ function LoginForm({
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [remember, setRemember] = React.useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -44,6 +45,7 @@ function LoginForm({
       signIn(
         email,
         password,
+        remember,
         setLoading,
         setError,
         setShowError,
@@ -68,7 +70,7 @@ function LoginForm({
   return (
     <div className="w-10/12 bg-gray-900 h-fit flex flex-col space-y-12">
       <div className="flex flex-col space-y-3">
-        <h1 className="text-white font-semibold md:text-5xl text-2xl">
+        <h1 className="text-white font-semibold md:text-4xl text-2xl">
           Welcome to Systopher
         </h1>
         <p className="text-gray-400 font-light md:text-2xl text-lg">
@@ -77,7 +79,7 @@ function LoginForm({
       </div>
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="flex flex-col space-y-8"
+        className="flex flex-col space-y-4"
         action=""
       >
         <LoginInput
@@ -98,14 +100,8 @@ function LoginForm({
           showPassword={showPassword}
           setShowPassword={setShowPassword}
         />
-        <p
-          onClick={() => {
-            Router.push("/forgot");
-          }}
-          className="text-gray-400 font-light font-sm hover:underline hover:underline-offset-4 cursor-pointer w-fit"
-        >
-          Forgot Password?
-        </p>
+
+        <RememberMe checked={remember} setChecked={setRemember} />
         <Button
           className="w-full px-4 py-4 bg-gray-800 hover:bg-gray-700 duration-150 rounded-lg text-xl font-semibold text-yellow-500"
           type="submit"
@@ -115,6 +111,14 @@ function LoginForm({
         >
           Login
         </Button>
+        <p
+          onClick={() => {
+            Router.push("/forgot");
+          }}
+          className="text-gray-400 font-light font-sm hover:underline hover:underline-offset-4 cursor-pointer w-fit"
+        >
+          Forgot Password?
+        </p>
       </form>
       <div className="">
         <p className="text-gray-500 font-light md:text-xl">

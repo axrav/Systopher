@@ -11,6 +11,7 @@ import errorCodeToMessage from "../../components/Utils/Error";
 export const signIn = (
   email: string,
   password: string,
+  remember: boolean,
   setLoading: any,
   setError: any,
   setShowError: any,
@@ -19,7 +20,7 @@ export const signIn = (
 ) => {
   return async (dispatch: any) => {
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password, remember });
       dispatch({ type: SIGN_IN, payload: { user: res.data, error: null } });
     } catch (err: any) {
       dispatch({

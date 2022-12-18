@@ -3,7 +3,7 @@ import SignUpInput from "./SignUpInput";
 import Router from "next/router";
 import api from "../../api";
 import { Button } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { clearErrorMessage, signUp } from "../../redux/actions/UserAuth";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import Error from "../Utils/Error";
@@ -141,7 +141,7 @@ function SignUpForm({
   return (
     <div className="md:w-10/12 w-full scrollbar- px-6 pb-10 bg-gray-900 h-fit flex flex-col space-y-12">
       <div className="flex flex-col md:pt-40 pt-20 space-y-3">
-        <h1 className="text-white font-semibold md:text-5xl text-2xl">
+        <h1 className="text-white font-semibold md:text-4xl text-2xl">
           Welcome to Systopher
         </h1>
         <p className="text-gray-400 font-light md:text-2xl text-lg">

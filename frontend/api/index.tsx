@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://systopher.aarav.wtf/",
+  baseURL: "https://systopher.aaravarora.in/",
 });
