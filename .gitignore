@@ -1,2 +1,5 @@
 *.env
 helpers.txt
+# Build artifacts
+backend/systopher-backend
+systopher-backend
