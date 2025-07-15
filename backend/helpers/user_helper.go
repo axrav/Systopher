@@ -6,6 +6,7 @@ import (
 	"github.com/axrav/Systopher/backend/db"
 	"github.com/axrav/Systopher/backend/errors"
 	"github.com/axrav/Systopher/backend/models"
+	"github.com/google/uuid"
 )
 
 func GetUserData(email string) *models.UserData {
@@ -69,6 +70,10 @@ func CreateUser(email string, hash string, username string, u_id string) error {
 		return err
 	}
 	return nil
+}
+
+func GenerateUUIDForUser() string {
+	return uuid.New().String()
 }
 
 func SetUserId(u_id string, email string) error {
